@@ -9,7 +9,7 @@
 #include "SFML/Graphics.hpp"
 class Cursor: public WorldMember{
 public:
-    Cursor();
+    Cursor(int x, int y);
     void CreateObjectTexture() override;
 };
 

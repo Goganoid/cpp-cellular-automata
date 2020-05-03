@@ -2,9 +2,9 @@
 // Created by egor0 on 4/23/2020.
 //
 #include "Cursor.h"
-Cursor::Cursor() {
-    _x=50;
-    _y=50;
+Cursor::Cursor(int x, int y) {
+    _x=x;
+    _y=y;
     CreateObjectTexture();
 }
 void Cursor::CreateObjectTexture() {

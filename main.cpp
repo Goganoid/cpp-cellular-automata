@@ -57,7 +57,7 @@ int main()
 
     // create grid and get access to grid 2d array
     Grid grid = Grid(newScreenSize.x,newScreenSize.y,threadCount,buffer);
-    Cursor cursor = Cursor();
+    Cursor cursor = Cursor(50,50);
 
     // Create clock to count framerate
     sf::Clock Clock;
