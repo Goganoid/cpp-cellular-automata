@@ -10,26 +10,6 @@ void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size)
     window.setView(view);
 }
 
-sf::Vector2i mouseToCursorPos(sf::RenderWindow& window,sf::Vector2f screenSize){
-    sf::Vector2i mousePos{sf::Mouse::getPosition(window)};
-    sf::Vector2u size = window.getSize();
-    sf::Vector2f viewCenter = window.getView().getCenter();
-    mousePos.x /= (size.x/screenSize.x);
-    mousePos.y /= (size.y/screenSize.y);
-    mousePos.x += (viewCenter.x - screenSize.x/2);
-    mousePos.y += (viewCenter.y - screenSize.y/2);
-
-    return mousePos;
-}
-
-sf::Vector2i mouseToViewPortPos(sf::RenderWindow& window,sf::Vector2f screenSize){
-    sf::Vector2i mousePos{sf::Mouse::getPosition(window)};
-    sf::Vector2u size = window.getSize();
-    mousePos.x /= (size.x/screenSize.x);
-    mousePos.y /= (size.y/screenSize.y);
-
-    return mousePos;
-}
 
 int main()
 {
