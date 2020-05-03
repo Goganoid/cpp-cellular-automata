@@ -8,7 +8,7 @@ set(SFML_BIN_R "${PROJECT_SOURCE_DIR}/SFML/bin-release")
 set(BIN_DIR "${PROJECT_SOURCE_DIR}/build")
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
-add_executable(cpp_life main.cpp Grid.h Cell.h Grid.cpp Cell.cpp Cursor.h Cursor.cpp WorldMember.h WorldMember.cpp ThreadPool.h CellRule.h OverflowArray.h RLE_Coder.h)
+add_executable(cpp_life main.cpp Grid.h Cell.h Grid.cpp Cell.cpp Cursor.h Cursor.cpp WorldMember.h WorldMember.cpp ThreadPool.h CellRule.h OverflowArray.h RLE_Coder.h Controls.h Controls.cpp)
 add_custom_command(
         TARGET cpp_life
         POST_BUILD

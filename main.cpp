@@ -3,6 +3,7 @@
 #include "Grid.h"
 #include "Cursor.h"
 #include "RLE_Coder.h"
+#include "Controls.h"
 
 void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
     sf::View view(center,size);
@@ -59,14 +60,12 @@ int main()
     sf::Clock Clock;
     float framerate;
 
-    float zoomModificator = 2;
 
     bool worldPause = true;
 
 
+    Controls controls(grid,cursor,window);
 
-    sf::Vector2i mouseViewPortPos = mouseToViewPortPos(window,newScreenSize);
-    sf::Vector2i prevMouseViewPortPos = mouseViewPortPos;
     while (window.isOpen())
     {
         framerate = 1.f / Clock.getElapsedTime().asSeconds();
@@ -78,43 +77,11 @@ int main()
 
         while (window.pollEvent(event))
         {
-            mouseViewPortPos = mouseToViewPortPos(window, newScreenSize);
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // move cursor to mouse
-            if (event.type == sf::Event::MouseMoved) {
-                sf::Vector2i mousePos = mouseToCursorPos(window, newScreenSize);
-                cursor.SetPos(mousePos.x, mousePos.y);
-            }
-            // move viewport
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-
-                screenCenter.x -= (mouseViewPortPos.x-prevMouseViewPortPos.x);
-                screenCenter.y += (mouseViewPortPos.y-prevMouseViewPortPos.y);
-            }
-            // zoom
-            if (event.type == sf::Event::MouseWheelMoved) {
-                std::cout << event.mouseWheel.delta << std::endl;
-                newScreenSize.x -= event.mouseWheel.delta * zoomModificator;
-                newScreenSize.y -= event.mouseWheel.delta * zoomModificator;
-            }
-
-            // Cell placing
-            if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-                grid
-                    .GetCell(cursor.GetX(),cursor.GetY())
-                    .SetNextState(CellState::Alive);
-            }
-            if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-                grid
-                        .GetCell(cursor.GetX(),cursor.GetY())
-                        .SetNextState(CellState::Empty);
-            }
-
-
-            prevMouseViewPortPos = mouseViewPortPos;
+            controls.SwitchMouse(event);
             // deprecated controls
             // TODO remove
             if(event.type == sf::Event::KeyPressed) {
@@ -163,7 +130,7 @@ int main()
         }
         if(worldPause) {
 
-            setViewSize(window,screenCenter, newScreenSize);
+//            setViewSize(window,screenCenter, newScreenSize);
             window.clear(sf::Color::Black);
             buffer.clear(sf::Color::Red);
             // calculate cells new state
