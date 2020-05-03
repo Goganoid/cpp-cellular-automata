@@ -82,34 +82,9 @@ int main()
                 window.close();
 
             controls.SwitchMouse(event);
-            // deprecated controls
-            // TODO remove
+            
             if(event.type == sf::Event::KeyPressed) {
-                // Cursor Movement
-                if(event.key.code == sf::Keyboard::A){
-                    cursor.Move(-1,0);
-                }
-                if(event.key.code == sf::Keyboard::D){
-                    cursor.Move(+1,0);
-                }
-                if(event.key.code == sf::Keyboard::S){
-                    cursor.Move(0,+1);
-                }
-                if(event.key.code == sf::Keyboard::W){
-                    cursor.Move(0,-1);
-                }
-                // Cell Placing and Destruction
-                if(event.key.code == sf::Keyboard::O){
-                    grid
-                    .GetCell(cursor.GetX(),cursor.GetY())
-                    .SetNextState(CellState::Alive);
 
-                }
-                if(event.key.code == sf::Keyboard::P){
-                    grid
-                    .GetCell(cursor.GetX(),cursor.GetY())
-                    .SetNextState(CellState::Empty);
-                }
                 // Start/Pause simulation
                 if(event.key.code == sf::Keyboard::Space){
                     grid.TogglePause();
