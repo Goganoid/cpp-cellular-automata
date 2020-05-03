@@ -64,7 +64,7 @@ int main()
     bool worldPause = true;
 
 
-    Controls controls(grid,cursor,window);
+    MouseControls controls(grid,cursor,window);
 
     while (window.isOpen())
     {

@@ -3,7 +3,7 @@
 //
 #include "Controls.h"
 
-Controls::Controls(Grid& grid, Cursor& cursor, sf::RenderWindow& window){
+MouseControls::MouseControls(Grid& grid, Cursor& cursor, sf::RenderWindow& window){
 _grid = &grid;
 _cursor = &cursor;
 _window = &window;
@@ -13,12 +13,12 @@ _mouseViewPortPos = mouseToViewPortPos(*_window, _viewportSize);
 _prevMouseViewPortPos = _mouseViewPortPos;
 }
 
-void Controls::setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
+void MouseControls::setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
     sf::View view(center,size);
     window.setView(view);
 }
 
-sf::Vector2i Controls::mouseToCursorPos(sf::RenderWindow& window,sf::Vector2f screenSize){
+sf::Vector2i MouseControls::mouseToCursorPos(sf::RenderWindow& window,sf::Vector2f screenSize){
     sf::Vector2i mousePos{sf::Mouse::getPosition(window)};
     sf::Vector2u size = window.getSize();
     sf::Vector2f viewCenter = window.getView().getCenter();
@@ -30,7 +30,7 @@ sf::Vector2i Controls::mouseToCursorPos(sf::RenderWindow& window,sf::Vector2f sc
     return mousePos;
 }
 
-sf::Vector2i Controls::mouseToViewPortPos(sf::RenderWindow& window,sf::Vector2f screenSize){
+sf::Vector2i MouseControls::mouseToViewPortPos(sf::RenderWindow& window,sf::Vector2f screenSize){
     sf::Vector2i mousePos{sf::Mouse::getPosition(window)};
     sf::Vector2u size = window.getSize();
     mousePos.x /= (size.x/screenSize.x);
@@ -42,7 +42,7 @@ sf::Vector2i Controls::mouseToViewPortPos(sf::RenderWindow& window,sf::Vector2f 
 
 
 
-void Controls::SwitchMouse(sf::Event event){
+void MouseControls::SwitchMouse(sf::Event event){
     _mouseViewPortPos = mouseToViewPortPos(*_window, _viewportSize);
     // move cursor to mouse
     if (event.type == sf::Event::MouseMoved) {
@@ -76,3 +76,4 @@ void Controls::SwitchMouse(sf::Event event){
     _prevMouseViewPortPos = _mouseViewPortPos;
     setViewSize(*_window,_center,_viewportSize);
 }
+

@@ -7,7 +7,7 @@
 #include "SFML/Graphics.hpp"
 #include "Grid.h"
 #include "Cursor.h"
-class Controls {
+class MouseControls {
 private:
     Grid *_grid;
     Cursor *_cursor;
@@ -20,7 +20,7 @@ private:
 public:
     float zoomModifier = 2;
 
-    Controls(Grid &grid, Cursor &cursor, sf::RenderWindow &window);
+    MouseControls(Grid &grid, Cursor &cursor, sf::RenderWindow &window);
 
     static void setViewSize(sf::RenderWindow &window, sf::Vector2f center, sf::Vector2f size);
 
@@ -29,6 +29,8 @@ public:
     static sf::Vector2i mouseToViewPortPos(sf::RenderWindow &window, sf::Vector2f screenSize);
 
     void SwitchMouse(sf::Event event);
+
+
 
 };
 #endif //CPP_LIFE_CONTROLS_H
