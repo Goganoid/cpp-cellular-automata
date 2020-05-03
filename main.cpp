@@ -33,7 +33,7 @@ int main()
     sf::Sprite bufferSprite(buffer.getTexture());
 
     // create grid and get access to grid 2d array
-    Grid grid = Grid(newScreenSize.x,newScreenSize.y,threadCount,buffer);
+    Grid world = Grid(newScreenSize.x, newScreenSize.y, threadCount, buffer);
     Cursor cursor = Cursor(50,50);
 
     // Create clock to count framerate
@@ -44,7 +44,7 @@ int main()
     bool worldPause = true;
 
 
-    MouseControls controls(grid,cursor,window);
+    MouseControls controls(world, cursor, window);
 
     while (window.isOpen())
     {
@@ -67,7 +67,7 @@ int main()
 
                 // Start/Pause simulation
                 if(event.key.code == sf::Keyboard::Space){
-                    grid.TogglePause();
+                    world.TogglePause();
                 }
                 // Pause everything
                 if(event.key.code == sf::Keyboard::M){
@@ -77,7 +77,7 @@ int main()
                 if(event.key.code==sf::Keyboard::Z){
                     for(int y=0;y<res.size();y++){
                         for(int x=0;x<res[y].size();x++){
-                            grid.GetCell(x+cursor.GetX(),y+cursor.GetY()).SetNextState(res[y][x]);
+                            world.GetCell(x + cursor.GetX(), y + cursor.GetY()).SetNextState(res[y][x]);
                         }
                     }
                 }
@@ -89,8 +89,8 @@ int main()
             window.clear(sf::Color::Black);
             buffer.clear(sf::Color::Red);
             // calculate cells new state
-            grid.CalculateCells(threadCount);
-            grid.DisplayCells();
+            world.CalculateCells(threadCount);
+            world.DisplayCells();
 
 
             cursor.DrawTo(&buffer);
