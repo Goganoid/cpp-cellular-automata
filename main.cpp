@@ -15,8 +15,8 @@ sf::Vector2i mouseToCursorPos(sf::RenderWindow& window,sf::Vector2f screenSize){
     sf::Vector2f viewCenter = window.getView().getCenter();
     mousePos.x /= (size.x/screenSize.x);
     mousePos.y /= (size.y/screenSize.y);
-    mousePos.x += (viewCenter.x- screenSize.x/2);
-    mousePos.y += (viewCenter.y- screenSize.y/2);
+    mousePos.x += (viewCenter.x - screenSize.x/2);
+    mousePos.y += (viewCenter.y - screenSize.y/2);
 
     return mousePos;
 }
@@ -32,7 +32,6 @@ sf::Vector2i mouseToViewPortPos(sf::RenderWindow& window,sf::Vector2f screenSize
 
 int main()
 {
-//    auto res = FromRLE("bo$2bo$3o!",0,0);
     auto res = FromRLE("4b2o6b2o4b$3bobo6bobo3b$3bo10bo3b$2obo10bob2o$2obobo2b2o2bobob2o$3bobo\n"
                        "bo2bobobo3b$3bobobo2bobobo3b$2obobo2b2o2bobob2o$2obo10bob2o$3bo10bo3b$\n"
                        "3bobo6bobo3b$4b2o6b2o!",0,0);
@@ -47,9 +46,6 @@ int main()
     // change window size to upscale pixels
     sf::Vector2f newScreenSize{100,100};
     sf::Vector2f screenCenter{30,30};
-//    sf::View view(sf::Vector2f(newScreenSize.x/2,newScreenSize.y/2), newScreenSize);
-//    window.setView(view);
-//    setViewSize(window,sf::Vector2f(newScreenSize.x/2,newScreenSize.y/2), newScreenSize);
     setViewSize(window,screenCenter, newScreenSize);
     sf::RenderTexture buffer;
     buffer.create(newScreenSize.x,newScreenSize.y);
