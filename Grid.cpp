@@ -8,6 +8,7 @@
 #include <iomanip>
 
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
+    rule = new Rule("B3/S23");
     _isPaused = true;
     _screen = &screen;
     // create empty grid
@@ -44,6 +45,7 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
 }
 
 Grid::~Grid() {
+    delete rule;
     delete pool;
     delete []storage;
 }
@@ -87,7 +89,8 @@ void Grid::CalculateZone(int id,const int range[2]){
                 temp.emplace_back(std::vector<int>{x,y});
             }
             if(!_isPaused){
-                cell.SetNextState(GameOfLife(*this,x,y));
+//                cell.SetNextState(GameOfLife(*this,x,y));
+                cell.SetNextState(rule->Execute(*this, x, y));
             }
         }
     }

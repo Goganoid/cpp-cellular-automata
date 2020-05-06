@@ -12,13 +12,17 @@
 #include "ThreadPool.h"
 #include "SFML/Graphics.hpp"
 #include "OverflowArray.h"
+
 /*-------------------
 
 
  ------------------- */
 
+class Rule;
+
 class Grid{
 private:
+    Rule* rule;
     bool _isPaused;
     int _width;
     int _height;

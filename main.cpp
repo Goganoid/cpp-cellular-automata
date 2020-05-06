@@ -4,7 +4,6 @@
 #include "Cursor.h"
 #include "RLE_Coder.h"
 #include "Controls.h"
-
 void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
     sf::View view(center,size);
     window.setView(view);
@@ -39,7 +38,6 @@ int main()
     // Create clock to count framerate
     sf::Clock Clock;
     float framerate;
-
 
     bool worldPause = true;
 
