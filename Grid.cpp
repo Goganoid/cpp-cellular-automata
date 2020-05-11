@@ -25,12 +25,16 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
 
     std::cout<<"Creating array"<<std::endl;
     _grid.Init(nullptr, height);
+    _rect_grid.Init(nullptr,height);
     for(int y=0;y<height;y++){
         _grid[y].Init(nullptr, width);
-
+        _rect_grid[y].Init(nullptr,width);
         pool->AddJob([this,width,y]() mutable {
             for(int x=0;x<width;x++){
-                _grid[y][x] = Cell(x, y);
+                _rect_grid[y][x] = CellRect(x,y);
+                _grid[y][x] = Cell();
+                _grid[y][x].SetRect(_rect_grid[y][x]);
+
             }
         });
     }
@@ -112,7 +116,6 @@ void Grid::CalculateCells(const int threadsAmount) {
 //    clock_t start, end;
 //
 //    double time_taken;
-
     for(int i=0;i<threadsAmount;i++){
        pool->AddJob( [this,i](){this->UpdateCellsStates(_ranges[i]);});
     }
@@ -148,7 +151,7 @@ void Grid::CalculateCells(const int threadsAmount) {
 
 void Grid::DisplayCells() {
     for (const auto & cell:_cells_to_draw) {
-        cell->DrawTo(_screen);
+        cell->GetRect().DrawTo(_screen);
     }
     _cells_to_draw.clear();
 }

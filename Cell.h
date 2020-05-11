@@ -16,23 +16,36 @@ struct CellState{
     CellBehavior	current_behavior : 4;
     CellBehavior	next_behavior : 4;
 };
-
-class Cell: public WorldMember{
-private:
-//    CellBehavior _state;
-//    CellBehavior _nextState;
-    CellState cellState;
+class CellRect: public WorldMember{
 public:
-    Cell();
-    Cell(int x, int y, CellBehavior state=CellBehavior::Empty);
+    CellRect();
+    CellRect(int x, int y);
     void CreateObjectTexture() override;
-//    bool IsAlive(){ return _state == CellBehavior::Alive;}
-    bool IsAlive(){ return cellState.current_behavior == CellBehavior::Alive;}
-//    CellBehavior & GetNextState()  { return _nextState;}
-    const CellBehavior & GetNextState() const  { return cellState.next_behavior;}
-//    CellBehavior & GetState()  { return _state;}
-    const CellBehavior & GetState() const  { return cellState.current_behavior;}
-    void SetState(CellBehavior state);
-    void SetNextState(CellBehavior state);
 };
+class Cell{
+private:
+    CellState cellState;
+    CellRect * _rect;
+public:
+    void SetRect(CellRect & rect){
+        _rect = &rect;
+}
+    CellRect & GetRect(){
+    return *_rect;
+}
+    Cell(CellBehavior state=CellBehavior::Empty);
+    bool IsAlive(){ return cellState.current_behavior == CellBehavior::Alive;}
+    const CellBehavior & GetNextState() const  { return cellState.next_behavior;}
+    const CellBehavior & GetState() const  { return cellState.current_behavior;}
+    void SetState(CellBehavior state){
+        cellState.current_behavior = state;
+    };
+    void SetNextState(CellBehavior state){
+        cellState.next_behavior = state;
+    };
+};
+
+
+
+
 #endif //CPP_LIFE_CELL_H

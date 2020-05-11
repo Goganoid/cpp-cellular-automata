@@ -29,6 +29,7 @@ private:
     int _height;
     sf::RenderTarget *  _screen;
     OverflowArray<OverflowArray<Cell>> _grid;
+    OverflowArray<OverflowArray<CellRect>> _rect_grid;
     std::vector<Cell*> _cells_to_draw;
     ThreadPool * pool;
     std::vector<Cell*> * storage;
