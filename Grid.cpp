@@ -8,7 +8,7 @@
 #include <iomanip>
 
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
-    rule = new Rule("B3/S23");
+    rule = new Rule("B3/S23",*this);
     _isPaused = true;
     _screen = &screen;
     // create empty grid
@@ -16,8 +16,8 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     _width = width;
     _height = height;
     pool = new ThreadPool(threadsAmount);
-    storage = new std::vector<std::vector<int>>[threadsAmount];
-
+    storage = new std::vector<Cell*>[threadsAmount];
+    _ranges = DivideGridIntoZones(threadsAmount,_width);
 
     clock_t start, end;
     start = clock();
@@ -56,7 +56,7 @@ Cell& Grid::GetCell(int x, int y) {
 Cell& Grid::GetCell(int coords[2]) {
     return GetCell(coords[0],coords[1]);
 }
-Cell& Grid::GetCell(std::vector<int> coords) {
+Cell& Grid::GetCell(std::vector<int> & coords) {
     return GetCell(coords[0],coords[1]);
 }
 
@@ -79,68 +79,78 @@ int ** Grid::DivideGridIntoZones(int zones, int length){
 
 
 void Grid::CalculateZone(int id,const int range[2]){
-    std::vector<std::vector<int>> temp;
+    std::vector<Cell*> temp;
+    Cell * cell;
     for(int y=0;y<_height;y++){
 
         for(int x=range[0];x<range[1];x++){
-            Cell & cell = GetCell(x,y);
+            cell = &GetCell(x,y);
 
-            if(cell.GetState()==CellState::Alive){
-                temp.emplace_back(std::vector<int>{x,y});
+            if(cell->GetState() == CellBehavior::Alive){
+                temp.emplace_back(cell);
             }
-            if(!_isPaused){
-//                cell.SetNextState(GameOfLife(*this,x,y));
-                cell.SetNextState(rule->Execute(*this, x, y));
+            if(!_isPaused) {
+                    rule->Execute(cell,x,y);
+
+                }
             }
         }
-    }
     storage[id] = temp;
 }
 
-void Grid::UpdateCellsStates(const int range[2]){
+void Grid::UpdateCellsStates(const int * range){
+    Cell * cell;
     for(int y=0;y<_height;y++){
         for(int x=range[0];x<range[1];x++) {
-            Cell & cell = GetCell(x,y);
-            cell.SetState(cell.GetNextState());
+            cell = &GetCell(x,y);
+            cell->SetState(cell->GetNextState());
         }
     }
 }
 
 void Grid::CalculateCells(const int threadsAmount) {
-    int ** ranges = DivideGridIntoZones(threadsAmount,_width);
+//    clock_t start, end;
+//
+//    double time_taken;
 
-    for(int i=0;i< threadsAmount;i++){
-       pool->AddJob( [this,ranges,i](){this->UpdateCellsStates(ranges[i]);});
+    for(int i=0;i<threadsAmount;i++){
+       pool->AddJob( [this,i](){this->UpdateCellsStates(_ranges[i]);});
     }
     pool->WaitAll();
 
-    for(int i=0;i< threadsAmount;i++){
-        pool->AddJob( [this,ranges,i]() {this->CalculateZone(i,ranges[i]);});
+
+    for(int i=0;i<threadsAmount;i++){
+        pool->AddJob( [this,i]() {this->CalculateZone(i,_ranges[i]);});
     }
     pool->WaitAll();
 
+
+//    start = clock();
     // change _cells_to_draw_coords size
     unsigned int newSize=0;
     for(int i=0;i<threadsAmount;i++){
         newSize+=storage[i].size();
     }
-    _cells_to_draw_coords.reserve(newSize);
+    _cells_to_draw.reserve(newSize);
 
     for(int i=0;i<threadsAmount;i++){
-        _cells_to_draw_coords.insert(_cells_to_draw_coords.end(),storage[i].begin(),storage[i].end());
+        _cells_to_draw.insert(_cells_to_draw.end(), storage[i].begin(), storage[i].end());
     }
-
-
+//    end=clock();
+//    time_taken = double(end - start)/ double (CLOCKS_PER_SEC);
+//    std::cout << "Calced in : " << std::fixed
+//              << time_taken << std::setprecision(5);
+//    std::cout << " sec " << std::endl;
 
 }
 
 
 
 void Grid::DisplayCells() {
-    for (const auto &cell_coord:_cells_to_draw_coords) {
-        GetCell(cell_coord).DrawTo(_screen);
+    for (const auto & cell:_cells_to_draw) {
+        cell->DrawTo(_screen);
     }
-    _cells_to_draw_coords.clear();
+    _cells_to_draw.clear();
 }
 
 void Grid::SetPause(bool state) {

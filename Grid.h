@@ -23,14 +23,15 @@ class Rule;
 class Grid{
 private:
     Rule* rule;
+    int ** _ranges;
     bool _isPaused;
     int _width;
     int _height;
     sf::RenderTarget *  _screen;
     OverflowArray<OverflowArray<Cell>> _grid;
-    std::vector<std::vector<int>> _cells_to_draw_coords;
+    std::vector<Cell*> _cells_to_draw;
     ThreadPool * pool;
-    std::vector<std::vector<int>> * storage;
+    std::vector<Cell*> * storage;
 
     ///  Divides number into ranges
     ///  Example:
@@ -56,18 +57,15 @@ private:
     /// that has the same height as the grid and a width equal to the length of the range
     /// <br> Sets Cell state value to Cell nextState value
     ///  @param[in] range [start_index,end_index] array to iterate through
-    void UpdateCellsStates(const int range[2]);
+    void UpdateCellsStates(const int * range);
 public:
-
-
-
 
     Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen);
     ~Grid();
 
     Cell& GetCell(int x, int y);
     Cell& GetCell(int coords[2]);
-    Cell& GetCell(std::vector<int> coords);
+    Cell& GetCell(std::vector<int> & coords);
 
     int GetHeight() { return _height;}
     int GetWidth()  { return _width;}

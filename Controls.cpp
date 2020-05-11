@@ -65,12 +65,12 @@ void MouseControls::SwitchMouse(sf::Event event){
     if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
         _grid
                 ->GetCell(_cursor->GetX(),_cursor->GetY())
-                .SetNextState(CellState::Alive);
+                .SetNextState(CellBehavior::Alive);
     }
     if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
         _grid
                 ->GetCell(_cursor->GetX(),_cursor->GetY())
-                .SetNextState(CellState::Empty);
+                .SetNextState(CellBehavior::Empty);
     }
 
     _prevMouseViewPortPos = _mouseViewPortPos;

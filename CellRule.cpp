@@ -14,10 +14,10 @@ inline std::vector<std::string> DivideLine(std::string string,char delim){
     return dividedLine;
 }
 
-Rule::Rule(std::string stringRule){
+Rule::Rule(std::string stringRule,Grid& grid){
     // remove literals
     stringRule.erase(std::remove_if(stringRule.begin(), stringRule.end(), ::isalpha), stringRule.end());
-
+    _grid = &grid;
     std::stringstream stringstream(stringRule);
     std::string segment;
     std::vector<std::string> params = DivideLine(stringRule,'/');
@@ -29,25 +29,30 @@ Rule::Rule(std::string stringRule){
     neighsToSurvive.push_back(c-48);
     }
 }
-CellState Rule::Execute(Grid& grid, int x, int y){
-    int neighbours =
-            grid.GetCell(x+1,y).GetState() +
-            grid.GetCell(x-1,y).GetState() +
-            grid.GetCell(x,y+1).GetState() +
-            grid.GetCell(x,y-1).GetState() +
-            grid.GetCell(x+1,y+1).GetState() +
-            grid.GetCell(x-1,y-1).GetState() +
-            grid.GetCell(x+1,y-1).GetState() +
-            grid.GetCell(x-1,y+1).GetState();
+void Rule::Execute(Cell * cell,int  x, int  y){
+    int _neighbours =
+            _grid->GetCell(x+1,y).GetState() +
+            _grid->GetCell(x-1,y).GetState() +
+            _grid->GetCell(x,y+1).GetState() +
+            _grid->GetCell(x,y-1).GetState() +
+            _grid->GetCell(x+1,y+1).GetState() +
+            _grid->GetCell(x-1,y-1).GetState() +
+            _grid->GetCell(x+1,y-1).GetState() +
+            _grid->GetCell(x-1,y+1).GetState();
+    bool willBorn = std::find(neighsToBorn.begin(), neighsToBorn.end(), _neighbours) != neighsToBorn.end();
+    bool willSurvive = std::find(neighsToSurvive.begin(), neighsToSurvive.end(), _neighbours) != neighsToSurvive.end();
 
-    bool willBorn = std::find(neighsToBorn.begin(), neighsToBorn.end(), neighbours) != neighsToBorn.end();
-    bool willSurvive = std::find(neighsToSurvive.begin(),neighsToSurvive.end(),neighbours)!=neighsToSurvive.end();
     // if neighbours count is in vector
-    if (willBorn){
-        return CellState::Alive;
+    if (willBorn || (willSurvive && _grid->GetCell(x,y).IsAlive())){
+        cell->SetNextState(CellBehavior::Alive);
+//        return CellState::Alive;
     }
-    if( willSurvive && grid.GetCell(x,y).IsAlive()){
-        return CellState::Alive;
+    else{
+        cell->SetNextState(CellBehavior::Empty);
     }
-    return CellState::Empty;
+//    if( willSurvive && _grid->GetCell(x,y).IsAlive()){
+//        cell->SetNextState(CellState::Alive);
+//        return CellState::Alive;
+//    }
+//    return CellState::Empty;
 }

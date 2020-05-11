@@ -11,11 +11,14 @@
 
 class Rule{
 private:
-  std::vector<int> neighsToBorn;
-  std::vector<int> neighsToSurvive;
+
+//  int _neighbours;
+  Grid * _grid;
 public:
-    explicit Rule(std::string stringRule);
-    CellState Execute(Grid& grid, int x, int y);
+    std::vector<int> neighsToBorn;
+    std::vector<int> neighsToSurvive;
+    explicit Rule(std::string stringRule, Grid& grid);
+    void Execute(Cell * cell,int  x, int  y);
 };
 
 #endif //CPP_LIFE_CELLRULE_H

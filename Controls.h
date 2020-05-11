@@ -18,7 +18,7 @@ private:
     sf::Vector2i _prevMouseViewPortPos;
     sf::Vector2f _center;
 public:
-    float zoomModifier = 2;
+    float zoomModifier = 20;
 
     MouseControls(Grid &grid, Cursor &cursor, sf::RenderWindow &window);
 

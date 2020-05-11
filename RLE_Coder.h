@@ -6,12 +6,21 @@
 #define CPP_LIFE_RLE_CODER_H
 #include "Grid.h"
 #include <string.h>
+#include <iostream>
+#include <fstream>
+#include <regex>
 
-//std::string ToRlE(Grid& grid,int x, int y){
-//
-//}
-std::vector< std::vector<CellState> > FromRLE(std::string rle,int x, int y){
-    std::vector< std::vector<CellState> > result(std::count(rle.begin(),rle.end(),'$')+1);
+
+struct RLEReadResult{
+    int x;
+    int y;
+    std::vector< std::vector<CellBehavior> > pattern;
+};
+
+std::vector< std::vector<CellBehavior> > FromRLE(std::string rle){
+    std::remove(rle.begin(),rle.end(),'\n');
+//    std::vector< std::vector<CellState> > result(std::count(rle.begin(),rle.end(),'$')+1);
+    std::vector< std::vector<CellBehavior> > result(1);
     int vec_y=0;
 
     std::string number;
@@ -21,10 +30,8 @@ std::vector< std::vector<CellState> > FromRLE(std::string rle,int x, int y){
             number+=rle[i];
         }
         else{
-            if(rle[i]=='$'){
-                vec_y+=1;
-            }
-            else if(rle[i]=='!'){
+
+            if(rle[i]=='!'){
                 continue;
             }
             else{
@@ -32,11 +39,15 @@ std::vector< std::vector<CellState> > FromRLE(std::string rle,int x, int y){
                 if(number.length()==0) number="1";
 
                 for(int n=0;n<std::stoi(number);n++){
+                    if(rle[i]=='$'){
+                        vec_y+=1;
+                        result.push_back(std::vector<CellBehavior>());
+                    }
                     if(rle[i]=='o'){
-                        result[vec_y].push_back(CellState::Alive);
+                        result[vec_y].push_back(CellBehavior::Alive);
                     }
                     if(rle[i]=='b'){
-                        result[vec_y].push_back(CellState::Empty);
+                        result[vec_y].push_back(CellBehavior::Empty);
                     }
                 }
                 number = "";
@@ -44,7 +55,61 @@ std::vector< std::vector<CellState> > FromRLE(std::string rle,int x, int y){
 
         }
     }
+
     return result;
 }
+RLEReadResult OpenRLE_File(std::string filePath){
+
+//    std::regex key_value_regex("([^=,]*)=(\"[^\"]*\"|[^,\"]*)");
+    std::regex key_value_regex("(\\w+)\\s*=\\s*([^\\s]+)");
+
+    std::string line;
+    std::ifstream file (filePath);
+
+    bool parametersFound = false;
+    std::string rle="";
+    std::vector<std::string> strParameters;
+    if (file.is_open())
+    {
+        while ( getline (file,line) )
+        {
+
+            if (line.rfind("#C",0)!=0){
+                if(!parametersFound) {
+                    auto words_begin =
+                            std::sregex_iterator(line.begin(), line.end(), key_value_regex);
+                    auto words_end = std::sregex_iterator();
+
+
+                    if (std::distance(words_begin, words_end) > 0) {
+                        parametersFound = true;
+
+                    }
+                    for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
+                        std::smatch match = *i;
+//                    std::string match_str = match.str(2);
+                        strParameters.push_back(match.str(2));
+                    }
+                }
+                else{
+                    rle+=line;
+//                    std::cout<<rle<<std::endl;
+                }
+            }
+
+        }
+        file.close();
+        RLEReadResult result;
+        result.x = std::stoi(strParameters[0]);
+        result.y = std::stoi(strParameters[1]);
+        result.pattern = FromRLE(rle);
+        return result;
+    }
+    else{
+        std::cout<<"Error"<<std::endl;
+    }
+}
+
+
 
 #endif //CPP_LIFE_RLE_CODER_H

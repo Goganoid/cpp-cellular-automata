@@ -8,9 +8,9 @@ template<typename T>
 class OverflowArray{
 private:
     T* ptr;
-    int size;
+    long int size;
 public:
-    T& operator[](int index){
+    T& operator[](long int index){
         if(index<0){
             index = size + index;
             return operator[](index);
@@ -18,6 +18,7 @@ public:
 
         if(index>=size){
             index = index - size;
+            return operator[](index);
         }
 
         return ptr[index];

@@ -11,16 +11,20 @@ void Cell::CreateObjectTexture() {
     objectRect.setFillColor(sf::Color::White);
     objectRect.setPosition(_x,_y);
 }
-Cell::Cell(int x,int y,CellState state){
+Cell::Cell(int x, int y, CellBehavior state){
     _x = x;
     _y = y;
-    _state = state;
-    _nextState = state;
+//    _state = state;
+//    _nextState = state;
+    cellState.current_behavior = state;
+    cellState.next_behavior = state;
     CreateObjectTexture();
 }
-void Cell::SetState(CellState state) {
-    _state = state;
+void Cell::SetState(CellBehavior state) {
+//    _state = state;
+    cellState.current_behavior = state;
 }
-void Cell::SetNextState(CellState state) {
-    _nextState = state;
+void Cell::SetNextState(CellBehavior state) {
+//    _nextState = state;
+    cellState.next_behavior = state;
 }
