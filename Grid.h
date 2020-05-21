@@ -18,11 +18,11 @@
 
  ------------------- */
 
-class Rule;
+class LifeRule;
 
 class Grid{
 private:
-    Rule* rule;
+    LifeRule* rule;
     int ** _ranges;
     bool _isPaused;
     int _width;

@@ -9,7 +9,8 @@
 #include <algorithm>
 #include <sstream>
 
-class Rule{
+
+class LifeRule{
 private:
 
 //  int _neighbours;
@@ -17,8 +18,9 @@ private:
 public:
     std::vector<int> neighsToBorn;
     std::vector<int> neighsToSurvive;
-    explicit Rule(std::string stringRule, Grid& grid);
+    explicit LifeRule(std::string stringRule, Grid& grid);
     void Execute(Cell * cell,int  x, int  y);
 };
+
 
 #endif //CPP_LIFE_CELLRULE_H

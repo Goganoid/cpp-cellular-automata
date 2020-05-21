@@ -8,7 +8,7 @@
 #include <iomanip>
 
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
-    rule = new Rule("B3/S23",*this);
+    rule = new LifeRule("B3/S23", *this);
     _isPaused = true;
     _screen = &screen;
     // create empty grid

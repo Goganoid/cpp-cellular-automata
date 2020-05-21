@@ -9,20 +9,31 @@
 #include "imgui/imgui-SFML.h"
 #include "imgui/imfilebrowser.h"
 
+#include "hlife.h"
+#include <unordered_map>
 void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
     sf::View view(center,size);
     window.setView(view);
 }
 
-
 int main()
 {
+
+//    Tree tr = Tree();
+
     auto res = FromRLE("4b2o6b2o4b$3bobo6bobo3b$3bo10bo3b$2obo10bob2o$2obobo2b2o2bobob2o$3bobo\n"
                        "bo2bobobo3b$3bobobo2bobobo3b$2obobo2b2o2bobob2o$2obo10bob2o$3bo10bo3b$\n"
                        "3bobo6bobo3b$4b2o6b2o!");
 
 
-    auto r = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
+    auto r = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test2.rl");
+//    auto pat = tr.construct(r.pattern);
+
+//    tr.tree = pat;
+//    int d=120;
+//    s0 = tr.advance(tr.tree,d);
+//    susp0 = tr.expand(s0);
+//    prev = susp0;
 
     int threadCount = 8;
     // create window
@@ -30,7 +41,7 @@ int main()
     window.setFramerateLimit(30);
     ImGui::SFML::Init(window);
     // change window size to upscale pixels
-    sf::Vector2f newScreenSize{1000,1000};
+    sf::Vector2f newScreenSize{160,160};
     sf::Vector2f screenCenter{30,30};
     setViewSize(window,screenCenter, newScreenSize);
     sf::RenderTexture buffer;
@@ -86,16 +97,8 @@ int main()
                 }
                 // place smth
                 if(event.key.code==sf::Keyboard::Z){
-                    for(int y=0;y<r.pattern.size();y++){
-                        for(int x=0;x<r.pattern[y].size();x++){
-//                            if(x + cursor.GetX()>1000 || y + cursor.GetY()>1000) {
-//                                std::cout << "X: " << x + cursor.GetX()
-//                                          << std::endl;
-//                                std::cout << "Y: " << y + cursor.GetY()
-//                                          << std::endl;
-//                            }
-                            world.GetCell(x + 0, y + 0).SetNextState(r.pattern[y][x]);
-                        }
+                    for(Point point:r.pattern){
+                        world.GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
                     }
                 }
             }

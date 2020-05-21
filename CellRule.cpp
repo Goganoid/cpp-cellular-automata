@@ -14,7 +14,7 @@ inline std::vector<std::string> DivideLine(std::string string,char delim){
     return dividedLine;
 }
 
-Rule::Rule(std::string stringRule,Grid& grid){
+LifeRule::LifeRule(std::string stringRule, Grid& grid){
     // remove literals
     stringRule.erase(std::remove_if(stringRule.begin(), stringRule.end(), ::isalpha), stringRule.end());
     _grid = &grid;
@@ -29,7 +29,7 @@ Rule::Rule(std::string stringRule,Grid& grid){
     neighsToSurvive.push_back(c-48);
     }
 }
-void Rule::Execute(Cell * cell,int  x, int  y){
+void LifeRule::Execute(Cell * cell, int  x, int  y){
     int _neighbours =
             _grid->GetCell(x+1,y).GetState() +
             _grid->GetCell(x-1,y).GetState() +

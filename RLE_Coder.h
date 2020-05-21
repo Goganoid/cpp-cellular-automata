@@ -10,19 +10,28 @@
 #include <fstream>
 #include <regex>
 
-
-struct RLEReadResult{
+struct Point{
     int x;
     int y;
-    std::vector< std::vector<CellBehavior> > pattern;
+    bool const operator==(const Point &o) const {
+        return x == o.x && y == o.y;
+    }
+
+    bool const operator<(const Point &o) const {
+        return x < o.x || (x == o.x && y < o.y);}
 };
 
-std::vector< std::vector<CellBehavior> > FromRLE(std::string rle){
+struct RLEReadResult{
+    Point point;
+    std::vector<Point> pattern;
+};
+
+std::vector<Point> FromRLE(std::string rle){
     std::remove(rle.begin(),rle.end(),'\n');
 //    std::vector< std::vector<CellState> > result(std::count(rle.begin(),rle.end(),'$')+1);
-    std::vector< std::vector<CellBehavior> > result(1);
-    int vec_y=0;
-
+    std::vector<Point> result;
+    int y=0;
+    int x=0;
     std::string number;
 
     for(int i=0;i<rle.size();i++){
@@ -40,14 +49,17 @@ std::vector< std::vector<CellBehavior> > FromRLE(std::string rle){
 
                 for(int n=0;n<std::stoi(number);n++){
                     if(rle[i]=='$'){
-                        vec_y+=1;
-                        result.push_back(std::vector<CellBehavior>());
+                        y+=1;
+                        x=0;
+//                        result.push_back(std::vector<CellBehavior>());
                     }
                     if(rle[i]=='o'){
-                        result[vec_y].push_back(CellBehavior::Alive);
+                        result.push_back({x,y});
+                        x+=1;
                     }
                     if(rle[i]=='b'){
-                        result[vec_y].push_back(CellBehavior::Empty);
+                        x+=1;
+//                        result[vec_y].push_back(CellBehavior::Empty);
                     }
                 }
                 number = "";
@@ -100,8 +112,8 @@ RLEReadResult OpenRLE_File(std::string filePath){
         }
         file.close();
         RLEReadResult result;
-        result.x = std::stoi(strParameters[0]);
-        result.y = std::stoi(strParameters[1]);
+        result.point.x = std::stoi(strParameters[0]);
+        result.point.y = std::stoi(strParameters[1]);
         result.pattern = FromRLE(rle);
         return result;
     }
