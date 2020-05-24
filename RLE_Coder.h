@@ -4,7 +4,6 @@
 
 #ifndef CPP_LIFE_RLE_CODER_H
 #define CPP_LIFE_RLE_CODER_H
-//#include "Grid.h"
 #include <string.h>
 #include <iostream>
 #include <fstream>
@@ -19,7 +18,6 @@ struct RLEReadResult{
 
 std::vector<Point> FromRLE(std::string rle){
     std::remove(rle.begin(),rle.end(),'\n');
-//    std::vector< std::vector<CellState> > result(std::count(rle.begin(),rle.end(),'$')+1);
     std::vector<Point> result;
     int y=0;
     int x=0;
@@ -42,7 +40,6 @@ std::vector<Point> FromRLE(std::string rle){
                     if(rle[i]=='$'){
                         y+=1;
                         x=0;
-//                        result.push_back(std::vector<CellBehavior>());
                     }
                     if(rle[i]=='o'){
                         result.push_back({x,y});
@@ -50,7 +47,6 @@ std::vector<Point> FromRLE(std::string rle){
                     }
                     if(rle[i]=='b'){
                         x+=1;
-//                        result[vec_y].push_back(CellBehavior::Empty);
                     }
                 }
                 number = "";
@@ -61,9 +57,8 @@ std::vector<Point> FromRLE(std::string rle){
 
     return result;
 }
-RLEReadResult OpenRLE_File(std::string filePath){
-
-//    std::regex key_value_regex("([^=,]*)=(\"[^\"]*\"|[^,\"]*)");
+RLEReadResult OpenRLE_File(const std::string& filePath){
+    // searches for RLE parameters
     std::regex key_value_regex("(\\w+)\\s*=\\s*([^\\s]+)");
 
     std::string line;
@@ -90,13 +85,11 @@ RLEReadResult OpenRLE_File(std::string filePath){
                     }
                     for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
                         std::smatch match = *i;
-//                    std::string match_str = match.str(2);
                         strParameters.push_back(match.str(2));
                     }
                 }
                 else{
                     rle+=line;
-//                    std::cout<<rle<<std::endl;
                 }
             }
 
