@@ -15,7 +15,7 @@ find_package(OpenGL)
 add_executable(cpp_life main.cpp Grid.h Cell.h Grid.cpp Cell.cpp Cursor.h Cursor.cpp
         WorldMember.h WorldMember.cpp ThreadPool.h CellRule.h OverflowArray.h
         RLE_Coder.h Controls.h Controls.cpp CellRule.cpp
-        imgui/imgui.cpp imgui/imgui_draw.cpp imgui/imgui_widgets.cpp imgui/imgui-SFML.cpp imgui/imgui_demo.cpp imgui/imfilebrowser.h hlife.h Point.h)
+        imgui/imgui.cpp imgui/imgui_draw.cpp imgui/imgui_widgets.cpp imgui/imgui-SFML.cpp imgui/imgui_demo.cpp imgui/imfilebrowser.h hlife.h Point.h Timer.h)
 add_custom_command(
         TARGET cpp_life
         POST_BUILD
