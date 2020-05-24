@@ -10,7 +10,7 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     rule = new LifeRule("B3/S23");
     _isPaused = true;
     _screen = &screen;
-
+    _threads = threadsAmount;
 
     _width = width;
     _height = height;
@@ -112,26 +112,26 @@ void Grid::UpdateCellsStates(const int * range){
     }
 }
 
-void Grid::CalculateCells(const int threadsAmount) {
+void Grid::CalculateCells() {
 
-    for(int i=0;i<threadsAmount;i++){
+    for(int i=0;i<_threads;i++){
        pool->AddJob( [this,i](){this->UpdateCellsStates(_ranges[i]);});
     }
     pool->WaitAll();
 
 
 
-    for(int i=0;i<threadsAmount;i++){
+    for(int i=0;i<_threads;i++){
         pool->AddJob( [this,i]() {this->CalculateZone(i,_ranges[i]);});
     }
     pool->WaitAll();
 
     unsigned int newSize=0;
-    for(int i=0;i<threadsAmount;i++){
+    for(int i=0;i<_threads;i++){
         newSize+=storage[i].size();
     }
     _cells_to_draw.reserve(newSize);
-    for(int i=0;i<threadsAmount;i++){
+    for(int i=0;i<_threads;i++){
         _cells_to_draw.insert(_cells_to_draw.end(), storage[i].begin(), storage[i].end());
     }
 

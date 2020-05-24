@@ -129,7 +129,7 @@ int main()
 
 
 
-            world.CalculateCells(threadCount);
+            world.CalculateCells();
 
             timer.Start();
 

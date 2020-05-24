@@ -23,7 +23,7 @@ class LifeRule;
 class Grid{
 private:
     int step = 0;
-    int counter = 0;
+    int _threads;
     LifeRule* rule;
     int ** _ranges;
     bool _isPaused;
@@ -75,7 +75,7 @@ public:
     Cell& GetCell(std::vector<int> & coords);
     [[nodiscard]] int GetHeight() const { return _height;}
     [[nodiscard]] int GetWidth() const  { return _width;}
-    void CalculateCells(int threads=4);
+    void CalculateCells();
     void DisplayCells();
 
     void SetPause(bool state);
