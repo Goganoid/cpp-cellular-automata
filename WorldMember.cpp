@@ -12,11 +12,9 @@ WorldMember::WorldMember(int x, int y, sf::Color color) {
     SetPos(x,y);
 }
 
-int WorldMember::GetX() { return _x;}
-int WorldMember::GetY() { return _y;}
+int WorldMember::GetX() const { return _x;}
+int WorldMember::GetY() const { return _y;}
 void WorldMember::Move(int x, int y) {
-//    _x+=x;
-//    _y+=y;
     SetPos(_x+x,_y+y);
 }
 void WorldMember::DrawTo(sf::RenderTarget *renderTarget) {
