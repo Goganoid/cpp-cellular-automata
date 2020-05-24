@@ -11,6 +11,7 @@
 
 #include "hlife.h"
 #include <unordered_map>
+#include <bitset>
 void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
     sf::View view(center,size);
     window.setView(view);
@@ -19,21 +20,14 @@ void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size)
 int main()
 {
 
-//    Tree tr = Tree();
+
 
     auto res = FromRLE("4b2o6b2o4b$3bobo6bobo3b$3bo10bo3b$2obo10bob2o$2obobo2b2o2bobob2o$3bobo\n"
                        "bo2bobobo3b$3bobobo2bobobo3b$2obobo2b2o2bobob2o$2obo10bob2o$3bo10bo3b$\n"
                        "3bobo6bobo3b$4b2o6b2o!");
 
 
-    auto r = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test2.rl");
-//    auto pat = tr.construct(r.pattern);
-
-//    tr.tree = pat;
-//    int d=120;
-//    s0 = tr.advance(tr.tree,d);
-//    susp0 = tr.expand(s0);
-//    prev = susp0;
+    auto r = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
 
     int threadCount = 8;
     // create window
@@ -41,7 +35,7 @@ int main()
     window.setFramerateLimit(30);
     ImGui::SFML::Init(window);
     // change window size to upscale pixels
-    sf::Vector2f newScreenSize{160,160};
+    sf::Vector2f newScreenSize{1000,1000};
     sf::Vector2f screenCenter{30,30};
     setViewSize(window,screenCenter, newScreenSize);
     sf::RenderTexture buffer;
@@ -66,8 +60,8 @@ int main()
     ImGui::FileBrowser fileBrowser;
     fileBrowser.SetTitle("Choose file");
     fileBrowser.SetTypeFilters({".rle",".txt"});
-    clock_t start, end;
-    double time_taken;
+
+
     while (window.isOpen())
     {
         framerate = 1.f / Clock.getElapsedTime().asSeconds();
@@ -123,7 +117,6 @@ int main()
         ImGui::End();
         if(!isPaused) {
 
-//            setViewSize(window,screenCenter, newScreenSize);
             window.clear(sf::Color::Black);
             buffer.clear(sf::Color(gridColor[0]*255,gridColor[1]*255,gridColor[2]*255));
             // calculate cells new state
@@ -132,16 +125,27 @@ int main()
 
             world.CalculateCells(threadCount);
 
+//            clock_t start, end;
+//            double time_taken;
+//            start = clock();
+
+
             world.DisplayCells();
 
-            cursor.DrawTo(&buffer);
+//            end=clock();
+//            time_taken = double(end - start)/ double (CLOCKS_PER_SEC);
+//            std::cout << "Calced in : " << std::fixed
+//                      << time_taken << std::setprecision(5);
+//            std::cout << " sec " << std::endl;
 
+            cursor.DrawTo(&buffer);
             buffer.display();
             window.draw(bufferSprite);
 
             // end the current frame
             ImGui::SFML::Render(window);
             window.display();
+
         }
     }
     ImGui::SFML::Shutdown();

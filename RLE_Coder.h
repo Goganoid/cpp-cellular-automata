@@ -4,22 +4,13 @@
 
 #ifndef CPP_LIFE_RLE_CODER_H
 #define CPP_LIFE_RLE_CODER_H
-#include "Grid.h"
+//#include "Grid.h"
 #include <string.h>
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include "Point.h"
 
-struct Point{
-    int x;
-    int y;
-    bool const operator==(const Point &o) const {
-        return x == o.x && y == o.y;
-    }
-
-    bool const operator<(const Point &o) const {
-        return x < o.x || (x == o.x && y < o.y);}
-};
 
 struct RLEReadResult{
     Point point;

@@ -8,13 +8,14 @@
 #include <iomanip>
 
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
-    rule = new LifeRule("B3/S23", *this);
+    rule = new LifeRule("B3/S23");
     _isPaused = true;
     _screen = &screen;
     // create empty grid
 
     _width = width;
     _height = height;
+    _threads = threadsAmount;
     pool = new ThreadPool(threadsAmount);
     storage = new std::vector<Cell*>[threadsAmount];
     _ranges = DivideGridIntoZones(threadsAmount,_width);
@@ -24,17 +25,16 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     // fill grid with empty cells using threads
 
     std::cout<<"Creating array"<<std::endl;
-    _grid.Init(nullptr, height);
-    _rect_grid.Init(nullptr,height);
-    for(int y=0;y<height;y++){
-        _grid[y].Init(nullptr, width);
-        _rect_grid[y].Init(nullptr,width);
-        pool->AddJob([this,width,y]() mutable {
-            for(int x=0;x<width;x++){
+    _grid.Init(nullptr, _height);
+    _rect_grid.Init(nullptr,_height*_width);
+    for(int y=0;y<_height;y++){
+        _grid[y].Init(nullptr,_width);
+        _rect_grid[y].Init(nullptr,_width);
+        pool->AddJob([this,y]() mutable {
+            for(int x=0;x<_width;x++){
                 _rect_grid[y][x] = CellRect(x,y);
-                _grid[y][x] = Cell();
+                _grid[y][x] = {CellBehavior::Empty,CellBehavior::Empty};
                 _grid[y][x].SetRect(_rect_grid[y][x]);
-
             }
         });
     }
@@ -85,17 +85,22 @@ int ** Grid::DivideGridIntoZones(int zones, int length){
 void Grid::CalculateZone(int id,const int range[2]){
     std::vector<Cell*> temp;
     Cell * cell;
-    for(int y=0;y<_height;y++){
+    for(int y=1;y<=_height;y++){
+        int environment=   (GetCell(range[0],y-1).GetState() ? 32 : 0) + (GetCell(range[0]+1,y-1).GetState() ?  4 : 0)
+                         + (GetCell(range[0],   y  ).GetState() ? 16 : 0) + (GetCell(range[0]+1   ,y  ).GetState() ?  2 : 0)
+                         + (GetCell(range[0],y+1).GetState() ?  8 : 0) + (GetCell(range[0]+1,y+1).GetState() ?  1 : 0);
 
-        for(int x=range[0];x<range[1];x++){
+        for(int x=range[0]+1;x<=range[1];x++){
+            environment = ((environment % 64) * 8)
+                          + (GetCell(x+1,y-1).GetState() ? 4 : 0)
+                          + (GetCell(x+1,y  ).GetState() ? 2 : 0)
+                          + (GetCell(x+1,y+1).GetState() ? 1 : 0);
             cell = &GetCell(x,y);
-
             if(cell->GetState() == CellBehavior::Alive){
                 temp.emplace_back(cell);
             }
             if(!_isPaused) {
-                    rule->Execute(cell,x,y);
-
+                cell->SetNextState(static_cast<CellBehavior>(rule->Lookup(environment)));
                 }
             }
         }
@@ -108,18 +113,18 @@ void Grid::UpdateCellsStates(const int * range){
         for(int x=range[0];x<range[1];x++) {
             cell = &GetCell(x,y);
             cell->SetState(cell->GetNextState());
+
         }
     }
 }
 
 void Grid::CalculateCells(const int threadsAmount) {
-//    clock_t start, end;
-//
-//    double time_taken;
+
     for(int i=0;i<threadsAmount;i++){
        pool->AddJob( [this,i](){this->UpdateCellsStates(_ranges[i]);});
     }
     pool->WaitAll();
+
 
 
     for(int i=0;i<threadsAmount;i++){
@@ -127,31 +132,22 @@ void Grid::CalculateCells(const int threadsAmount) {
     }
     pool->WaitAll();
 
-
-//    start = clock();
-    // change _cells_to_draw_coords size
     unsigned int newSize=0;
     for(int i=0;i<threadsAmount;i++){
         newSize+=storage[i].size();
     }
     _cells_to_draw.reserve(newSize);
-
     for(int i=0;i<threadsAmount;i++){
         _cells_to_draw.insert(_cells_to_draw.end(), storage[i].begin(), storage[i].end());
     }
-//    end=clock();
-//    time_taken = double(end - start)/ double (CLOCKS_PER_SEC);
-//    std::cout << "Calced in : " << std::fixed
-//              << time_taken << std::setprecision(5);
-//    std::cout << " sec " << std::endl;
 
 }
 
 
 
 void Grid::DisplayCells() {
-    for (const auto & cell:_cells_to_draw) {
-        cell->GetRect().DrawTo(_screen);
+    for (size_t i=0;i<_cells_to_draw.size();i++) {
+        _cells_to_draw[i]->_rect->DrawTo(_screen);
     }
     _cells_to_draw.clear();
 }

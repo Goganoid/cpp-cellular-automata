@@ -8,18 +8,16 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
-
+#include <map>
 
 class LifeRule{
 private:
-
-//  int _neighbours;
-  Grid * _grid;
+    std::unordered_map  <int,int> lookupTable;
+    std::map<int,bool> neighsToBornTable;
+    std::map<int,bool> neighsToSurviveTable;
 public:
-    std::vector<int> neighsToBorn;
-    std::vector<int> neighsToSurvive;
-    explicit LifeRule(std::string stringRule, Grid& grid);
-    void Execute(Cell * cell,int  x, int  y);
+    [[nodiscard]] int Lookup(int i)  { return lookupTable[i];}
+    explicit LifeRule(std::string stringRule);
 };
 
 

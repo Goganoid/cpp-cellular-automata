@@ -22,6 +22,9 @@ class LifeRule;
 
 class Grid{
 private:
+    int step = 0;
+    int counter = 0;
+    int _threads;
     LifeRule* rule;
     int ** _ranges;
     bool _isPaused;
@@ -29,9 +32,14 @@ private:
     int _height;
     sf::RenderTarget *  _screen;
     OverflowArray<OverflowArray<Cell>> _grid;
+//    OverflowArray<OverflowArray<CellBehavior>> _gridt;
+//    OverflowArray<Cell> _grid;
     OverflowArray<OverflowArray<CellRect>> _rect_grid;
+//    OverflowArray<CellRect> _rect_grid;
+//    std::vector<Cell*> _cells_to_draw;
     std::vector<Cell*> _cells_to_draw;
     ThreadPool * pool;
+//    std::vector<Cell*> * storage;
     std::vector<Cell*> * storage;
 
     ///  Divides number into ranges
@@ -59,6 +67,10 @@ private:
     /// <br> Sets Cell state value to Cell nextState value
     ///  @param[in] range [start_index,end_index] array to iterate through
     void UpdateCellsStates(const int * range);
+
+
+
+
 public:
 
     Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen);
@@ -67,9 +79,8 @@ public:
     Cell& GetCell(int x, int y);
     Cell& GetCell(int coords[2]);
     Cell& GetCell(std::vector<int> & coords);
-
-    int GetHeight() { return _height;}
-    int GetWidth()  { return _width;}
+    [[nodiscard]] int GetHeight() const { return _height;}
+    [[nodiscard]] int GetWidth() const  { return _width;}
     void CalculateCells(int threads=4);
     void DisplayCells();
 

@@ -10,7 +10,6 @@
 class Cursor: public WorldMember{
 public:
     Cursor(int x, int y);
-    void CreateObjectTexture() override;
 };
 
 #endif //CPP_LIFE_CURSOR_H

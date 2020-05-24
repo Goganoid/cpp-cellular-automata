@@ -11,9 +11,9 @@ class WorldMember{
 protected:
     int _x;
     int _y;
-    sf::RectangleShape objectRect;
-    virtual void CreateObjectTexture() = 0;
+    sf::VertexArray  objectRect;
 public:
+    WorldMember(int x, int y,sf::Color color);
     int GetX();
     int GetY();
     virtual void SetPos(int x,int y);

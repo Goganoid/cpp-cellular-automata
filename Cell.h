@@ -12,36 +12,26 @@ enum CellBehavior: uint8_t{
     Alive,
 
 };
-struct CellState{
-    CellBehavior	current_behavior : 4;
-    CellBehavior	next_behavior : 4;
-};
 class CellRect: public WorldMember{
 public:
     CellRect();
     CellRect(int x, int y);
-    void CreateObjectTexture() override;
 };
-class Cell{
-private:
-    CellState cellState;
+struct Cell{
+    CellBehavior	current_behavior : 4;
+    CellBehavior	next_behavior : 4;
     CellRect * _rect;
-public:
-    void SetRect(CellRect & rect){
+    void SetRect(CellRect & rect) {
         _rect = &rect;
-}
-    CellRect & GetRect(){
-    return *_rect;
-}
-    Cell(CellBehavior state=CellBehavior::Empty);
-    bool IsAlive(){ return cellState.current_behavior == CellBehavior::Alive;}
-    const CellBehavior & GetNextState() const  { return cellState.next_behavior;}
-    const CellBehavior & GetState() const  { return cellState.current_behavior;}
+    }
+    [[nodiscard]] bool IsAlive() const{ return current_behavior == CellBehavior::Alive;}
+    [[nodiscard]] CellBehavior  GetNextState() const  { return next_behavior;}
+    [[nodiscard]] CellBehavior  GetState() const  { return current_behavior;}
     void SetState(CellBehavior state){
-        cellState.current_behavior = state;
+        current_behavior = state;
     };
     void SetNextState(CellBehavior state){
-        cellState.next_behavior = state;
+        next_behavior = state;
     };
 };
 
