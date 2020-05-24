@@ -66,6 +66,7 @@ int main()
     fileBrowser.SetTitle("Choose file");
     fileBrowser.SetTypeFilters({".rle",".txt"});
 
+    Timer timer;
 
     while (window.isOpen())
     {
@@ -130,18 +131,12 @@ int main()
 
             world.CalculateCells(threadCount);
 
-//            clock_t start, end;
-//            double time_taken;
-//            start = clock();
-
+            timer.Start();
 
             world.DisplayCells();
 
-//            end=clock();
-//            time_taken = double(end - start)/ double (CLOCKS_PER_SEC);
-//            std::cout << "Calced in : " << std::fixed
-//                      << time_taken << std::setprecision(5);
-//            std::cout << " sec " << std::endl;
+            timer.End();
+            timer.PrintTime();
 
             cursor.DrawTo(&buffer);
             buffer.display();
