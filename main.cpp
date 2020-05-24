@@ -1,17 +1,22 @@
 #include <iostream>
+
 #include <SFML/Graphics.hpp>
-#include "Grid.h"
-#include "Cursor.h"
-#include "RLE_Coder.h"
-#include "Controls.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 #include "imgui/imfilebrowser.h"
 
-#include "hlife.h"
-#include <unordered_map>
-#include <bitset>
+#include "Grid.h"
+#include "Cursor.h"
+#include "RLE_Coder.h"
+#include "Controls.h"
+#include "Timer.h"
+
+
+
+
+
+
 void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
     sf::View view(center,size);
     window.setView(view);
