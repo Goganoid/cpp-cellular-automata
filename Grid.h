@@ -24,7 +24,6 @@ class Grid{
 private:
     int step = 0;
     int counter = 0;
-    int _threads;
     LifeRule* rule;
     int ** _ranges;
     bool _isPaused;
@@ -32,14 +31,9 @@ private:
     int _height;
     sf::RenderTarget *  _screen;
     OverflowArray<OverflowArray<Cell>> _grid;
-//    OverflowArray<OverflowArray<CellBehavior>> _gridt;
-//    OverflowArray<Cell> _grid;
     OverflowArray<OverflowArray<CellRect>> _rect_grid;
-//    OverflowArray<CellRect> _rect_grid;
-//    std::vector<Cell*> _cells_to_draw;
     std::vector<Cell*> _cells_to_draw;
     ThreadPool * pool;
-//    std::vector<Cell*> * storage;
     std::vector<Cell*> * storage;
 
     ///  Divides number into ranges

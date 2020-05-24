@@ -5,26 +5,24 @@
 #include <thread>
 #include "CellRule.h"
 #include <iostream>
-#include <iomanip>
-
+#include "Timer.h"
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     rule = new LifeRule("B3/S23");
     _isPaused = true;
     _screen = &screen;
-    // create empty grid
+
 
     _width = width;
     _height = height;
-    _threads = threadsAmount;
     pool = new ThreadPool(threadsAmount);
     storage = new std::vector<Cell*>[threadsAmount];
     _ranges = DivideGridIntoZones(threadsAmount,_width);
 
-    clock_t start, end;
-    start = clock();
+    Timer timer;
     // fill grid with empty cells using threads
-
     std::cout<<"Creating array"<<std::endl;
+    timer.Start();
+    // create empty grid
     _grid.Init(nullptr, _height);
     _rect_grid.Init(nullptr,_height*_width);
     for(int y=0;y<_height;y++){
@@ -39,12 +37,8 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
         });
     }
     pool->WaitAll();
-
-    end=clock();
-    double time_taken = double(end - start)/ double (CLOCKS_PER_SEC);
-    std::cout << "Created array in : " << std::fixed
-              << time_taken << std::setprecision(5);
-    std::cout << " sec " << std::endl;
+    timer.End();
+    timer.PrintTime("creating array");
 
 }
 
