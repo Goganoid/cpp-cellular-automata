@@ -7,7 +7,12 @@
 #include <iostream>
 #include "Timer.h"
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
+    Timer timer;
+    logger.AddLog("Initializing lookup rule");
+    timer.Start();
     rule = new LookupRule("B3/S23");
+    timer.End();
+    logger.AddLog(timer.GetTime("initializing lookup rule"));
     _isPaused = true;
     _screen = &screen;
     _threads = threadsAmount;
@@ -15,13 +20,13 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     _width = width;
     _height = height;
     pool = new ThreadPool(threadsAmount);
-//    storage = new std::vector<Cell*>[threadsAmount];
     storage = new std::vector<sf::Vertex>[threadsAmount];
     _ranges = DivideGridIntoZones(threadsAmount,_width);
 
-    Timer timer;
+
     // fill grid with empty cells using threads
     std::cout<<"Creating array"<<std::endl;
+    logger.AddLog("Creating array");
     timer.Start();
     // create empty grid
     _grid.Init(nullptr, _height);
@@ -39,7 +44,8 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     }
     pool->WaitAll();
     timer.End();
-    timer.PrintTime("creating array");
+    logger.AddLog(timer.GetTime("creating array"));
+//    timer.PrintTime("creating array");
 
 }
 

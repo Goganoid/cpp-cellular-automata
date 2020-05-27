@@ -20,11 +20,13 @@ public:
     void End(){
         end = clock();
     }
-    void PrintTime(std::string objectName="job"){
+    std::string GetTime(const std::string& objectName="job"){
         time_taken = double(end - start)/ double (CLOCKS_PER_SEC);
-        std::cout << "Done "<<objectName<<" in : " << std::fixed
-                  << time_taken << std::setprecision(5);
-        std::cout << " sec " << std::endl;
+        std::stringstream buffer;
+        buffer << "Done "<<objectName<<" in : " << std::fixed
+              << time_taken << std::setprecision(5);
+        buffer << " sec " << std::endl;
+        return buffer.str();
     }
 };
 #endif //CPP_LIFE_TIMER_H
