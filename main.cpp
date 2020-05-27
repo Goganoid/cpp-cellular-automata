@@ -5,7 +5,6 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 #include "imgui/imfilebrowser.h"
-#include "AppLog.h"
 
 #include "Grid.h"
 #include "Cursor.h"
@@ -67,9 +66,8 @@ int main()
     ImGui::FileBrowser fileBrowser;
     fileBrowser.SetTitle("Choose file");
 
-    AppLog log;
 
-    log.AddLog("Test",LogType::Info);
+    world.logger.AddLog("Test",LogType::Info);
 //    fileBrowser.SetTypeFilters({".rle",".txt"});
 
 
@@ -110,7 +108,7 @@ int main()
 
         ImGui::SFML::Update(window, deltaClock.restart());
 
-        log.Draw("TEstTitle");
+        world.logger.Draw("TEstTitle");
 
         ImGui::Begin("Sample window");
         ImGui::ColorEdit3("Grid Color",gridColor);

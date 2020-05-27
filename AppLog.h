@@ -9,6 +9,7 @@
 #include "imgui/imconfig.h"
 #include <ctime>
 #include <sstream>
+#include <iomanip>
 
 enum class LogType{
     Info,
@@ -16,32 +17,7 @@ enum class LogType{
     Notice
 };
 
-std::string GetTime(){
-    std::stringstream buffer;
-    time_t curr_time;
-    tm curr_tm;
 
-    time(&curr_time);
-    localtime_s(&curr_tm,&curr_time);
-    buffer<<std::put_time(&curr_tm,"[%T]");
-    return buffer.str();
-}
-
-std::string GetLogMark(const LogType& logType){
-    switch (logType) {
-        case LogType::Info:
-            return "[info]";
-            break;
-        case LogType::Error:
-            return "[error]";
-            break;
-        case LogType::Notice:
-            return "[notice]";
-            break;
-        default:
-            return "[NULL]";
-    }
-}
 
 struct AppLog
 {
@@ -49,7 +25,32 @@ struct AppLog
     ImGuiTextFilter     Filter;
     ImVector<int>       LineOffsets;        // Index to lines offset
     bool                ScrollToBottom;
+    std::string GetTime(){
+        std::stringstream buffer;
+        time_t curr_time;
+        tm curr_tm;
 
+        time(&curr_time);
+        localtime_s(&curr_tm,&curr_time);
+        buffer<<std::put_time(&curr_tm,"[%T]");
+        return buffer.str();
+    }
+
+    std::string GetLogMark(const LogType& logType){
+        switch (logType) {
+            case LogType::Info:
+                return "[info]";
+                break;
+            case LogType::Error:
+                return "[error]";
+                break;
+            case LogType::Notice:
+                return "[notice]";
+                break;
+            default:
+                return "[NULL]";
+        }
+    }
     void    Clear()     { Buf.clear(); LineOffsets.clear(); }
     void    AddLog(const std::string& fmt, const LogType& logType)
     {
@@ -65,7 +66,7 @@ struct AppLog
         ScrollToBottom = true;
     }
 
-    void    Draw(const char* title, bool* p_opened = NULL)
+    void Draw(const char* title, bool* p_opened = NULL)
     {
         ImGui::SetNextWindowSize(ImVec2(500,400), ImGuiCond_FirstUseEver);
         ImGui::Begin(title, p_opened);

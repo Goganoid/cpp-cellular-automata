@@ -12,7 +12,7 @@
 #include "ThreadPool.h"
 #include "SFML/Graphics.hpp"
 #include "OverflowArray.h"
-
+#include "AppLog.h"
 /*-------------------
 
 
@@ -32,11 +32,8 @@ private:
     sf::RenderTarget *  _screen;
     OverflowArray<OverflowArray<Cell>> _grid;
     OverflowArray<OverflowArray<CellRect>> _rect_grid;
-//    std::vector<Cell*> _cells_to_draw;
     std::vector<sf::Vertex> _cells_to_draw;
     ThreadPool * pool;
-//    std::vector<Cell*> * storage;
-//    std::vector<sf::Vertex*> * storage;
     std::vector<sf::Vertex> * storage;
 
     ///  Divides number into ranges
@@ -69,7 +66,7 @@ private:
 
 
 public:
-
+    AppLog logger;
     Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen);
     ~Grid();
 
@@ -84,5 +81,6 @@ public:
     void SetPause(bool state);
     bool IsPaused();
     void TogglePause();
+
 };
 #endif //CPP_LIFE_GRID_H
