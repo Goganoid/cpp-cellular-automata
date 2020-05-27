@@ -11,8 +11,9 @@ class WorldMember{
 protected:
     int _x;
     int _y;
-    sf::VertexArray  objectRect;
+
 public:
+    sf::VertexArray  objectRect;
     WorldMember(int x, int y,sf::Color color);
     int GetX() const;
     int GetY() const;

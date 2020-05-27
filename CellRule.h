@@ -10,14 +10,14 @@
 #include <sstream>
 #include <map>
 
-class LifeRule{
+class LookupRule{
 private:
     std::unordered_map  <int,int> lookupTable;
     std::map<int,bool> neighsToBornTable;
     std::map<int,bool> neighsToSurviveTable;
 public:
     [[nodiscard]] int Lookup(int i)  { return lookupTable[i];}
-    explicit LifeRule(std::string stringRule);
+    explicit LookupRule(std::string stringRule);
 };
 
 

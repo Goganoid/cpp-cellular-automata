@@ -18,13 +18,13 @@
 
  ------------------- */
 
-class LifeRule;
+class LookupRule;
 
 class Grid{
 private:
     int step = 0;
     int _threads;
-    LifeRule* rule;
+    LookupRule* rule;
     int ** _ranges;
     bool _isPaused;
     int _width;
@@ -32,9 +32,12 @@ private:
     sf::RenderTarget *  _screen;
     OverflowArray<OverflowArray<Cell>> _grid;
     OverflowArray<OverflowArray<CellRect>> _rect_grid;
-    std::vector<Cell*> _cells_to_draw;
+//    std::vector<Cell*> _cells_to_draw;
+    std::vector<sf::Vertex> _cells_to_draw;
     ThreadPool * pool;
-    std::vector<Cell*> * storage;
+//    std::vector<Cell*> * storage;
+//    std::vector<sf::Vertex*> * storage;
+    std::vector<sf::Vertex> * storage;
 
     ///  Divides number into ranges
     ///  Example:

@@ -5,6 +5,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 #include "imgui/imfilebrowser.h"
+#include "AppLog.h"
 
 #include "Grid.h"
 #include "Cursor.h"
@@ -41,6 +42,7 @@ int main()
     ImGui::SFML::Init(window);
     // change window size to upscale pixels
     sf::Vector2f newScreenSize{1000,1000};
+//    sf::Vector2f newScreenSize{160,160};
     sf::Vector2f screenCenter{30,30};
     setViewSize(window,screenCenter, newScreenSize);
     sf::RenderTexture buffer;
@@ -61,10 +63,15 @@ int main()
     MouseControls controls(world, cursor, window);
 
     // all for imgui
-    float gridColor[3]{1,0,0};
+    float gridColor[3]{0.215,0.215,0.215};
     ImGui::FileBrowser fileBrowser;
     fileBrowser.SetTitle("Choose file");
-    fileBrowser.SetTypeFilters({".rle",".txt"});
+
+    AppLog log;
+
+    log.AddLog("Test",LogType::Info);
+//    fileBrowser.SetTypeFilters({".rle",".txt"});
+
 
     Timer timer;
 
@@ -83,7 +90,7 @@ int main()
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
-            if(!fileBrowser.IsOpened()) controls.SwitchMouse(event);
+            if(!fileBrowser.IsOpened() && !ImGui::IsAnyWindowFocused()) controls.SwitchMouse(event);
             
             if(event.type == sf::Event::KeyPressed) {
 
@@ -91,10 +98,7 @@ int main()
                 if(event.key.code == sf::Keyboard::Space){
                     world.TogglePause();
                 }
-                // Pause everything
-                if(event.key.code == sf::Keyboard::M){
-                    isPaused= !isPaused;
-                }
+
                 // place smth
                 if(event.key.code==sf::Keyboard::Z){
                     for(Point point:r.pattern){
@@ -105,8 +109,10 @@ int main()
         }
 
         ImGui::SFML::Update(window, deltaClock.restart());
-        ImGui::Begin("Sample window");
 
+        log.Draw("TEstTitle");
+
+        ImGui::Begin("Sample window");
         ImGui::ColorEdit3("Grid Color",gridColor);
 
         if(ImGui::Button("Choose pattern")){
@@ -117,11 +123,11 @@ int main()
 
         if(fileBrowser.HasSelected())
         {
-            std::cout << "Selected filename" << fileBrowser.GetSelected().string() << std::endl;
+            std::cout << "Selected filename " << fileBrowser.GetSelected().string() << std::endl;
+            r = OpenRLE_File(fileBrowser.GetSelected().string());
             fileBrowser.ClearSelected();
         }
         ImGui::End();
-        if(!isPaused) {
 
             window.clear(sf::Color::Black);
             buffer.clear(sf::Color(gridColor[0]*255,gridColor[1]*255,gridColor[2]*255));
@@ -131,12 +137,8 @@ int main()
 
             world.CalculateCells();
 
-            timer.Start();
 
             world.DisplayCells();
-
-            timer.End();
-            timer.PrintTime();
 
             cursor.DrawTo(&buffer);
             buffer.display();
@@ -146,7 +148,6 @@ int main()
             ImGui::SFML::Render(window);
             window.display();
 
-        }
     }
     ImGui::SFML::Shutdown();
     return 0;

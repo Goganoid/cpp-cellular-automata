@@ -7,7 +7,7 @@
 #include <iostream>
 #include "Timer.h"
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
-    rule = new LifeRule("B3/S23");
+    rule = new LookupRule("B3/S23");
     _isPaused = true;
     _screen = &screen;
     _threads = threadsAmount;
@@ -15,7 +15,8 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     _width = width;
     _height = height;
     pool = new ThreadPool(threadsAmount);
-    storage = new std::vector<Cell*>[threadsAmount];
+//    storage = new std::vector<Cell*>[threadsAmount];
+    storage = new std::vector<sf::Vertex>[threadsAmount];
     _ranges = DivideGridIntoZones(threadsAmount,_width);
 
     Timer timer;
@@ -77,7 +78,7 @@ int ** Grid::DivideGridIntoZones(int zones, int length){
 
 
 void Grid::CalculateZone(int id,const int range[2]){
-    std::vector<Cell*> temp;
+    std::vector<sf::Vertex> temp;
     Cell * cell;
     for(int y=1;y<=_height;y++){
         int environment=   (GetCell(range[0],y-1).GetState() ? 32 : 0) + (GetCell(range[0]+1,y-1).GetState() ?  4 : 0)
@@ -91,7 +92,10 @@ void Grid::CalculateZone(int id,const int range[2]){
                           + (GetCell(x+1,y+1).GetState() ? 1 : 0);
             cell = &GetCell(x,y);
             if(cell->GetState() == CellBehavior::Alive){
-                temp.emplace_back(cell);
+                temp.emplace_back(cell->_rect->objectRect[0]);
+                temp.emplace_back(cell->_rect->objectRect[1]);
+                temp.emplace_back(cell->_rect->objectRect[2]);
+                temp.emplace_back(cell->_rect->objectRect[3]);
             }
             if(!_isPaused) {
                 cell->SetNextState(static_cast<CellBehavior>(rule->Lookup(environment)));
@@ -113,19 +117,18 @@ void Grid::UpdateCellsStates(const int * range){
 }
 
 void Grid::CalculateCells() {
+    for(int step=0;step<1;step++) {
+        for (int i = 0; i < _threads; i++) {
+            pool->AddJob([this, i]() { this->UpdateCellsStates(_ranges[i]); });
+        }
+        pool->WaitAll();
 
-    for(int i=0;i<_threads;i++){
-       pool->AddJob( [this,i](){this->UpdateCellsStates(_ranges[i]);});
+
+        for (int i = 0; i < _threads; i++) {
+            pool->AddJob([this, i]() { this->CalculateZone(i, _ranges[i]); });
+        }
+        pool->WaitAll();
     }
-    pool->WaitAll();
-
-
-
-    for(int i=0;i<_threads;i++){
-        pool->AddJob( [this,i]() {this->CalculateZone(i,_ranges[i]);});
-    }
-    pool->WaitAll();
-
     unsigned int newSize=0;
     for(int i=0;i<_threads;i++){
         newSize+=storage[i].size();
@@ -140,10 +143,8 @@ void Grid::CalculateCells() {
 
 
 void Grid::DisplayCells() {
-    for (size_t i=0;i<_cells_to_draw.size();i++) {
-        _cells_to_draw[i]->_rect->DrawTo(_screen);
-    }
-    _cells_to_draw.clear();
+        _screen->draw(&_cells_to_draw[0], _cells_to_draw.size(), sf::Quads);
+        _cells_to_draw.clear();
 }
 
 void Grid::SetPause(bool state) {

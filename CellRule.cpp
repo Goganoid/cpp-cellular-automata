@@ -15,7 +15,7 @@ inline std::vector<std::string> DivideLine(const std::string& string,char delimi
     return dividedLine;
 }
 
-LifeRule::LifeRule(std::string stringRule){
+LookupRule::LookupRule(std::string stringRule){
     // remove literals
     stringRule.erase(std::remove_if(stringRule.begin(), stringRule.end(), ::isalpha), stringRule.end());
     std::stringstream ss(stringRule);
