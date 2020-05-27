@@ -52,11 +52,11 @@ struct AppLog
         }
     }
     void    Clear()     { Buf.clear(); LineOffsets.clear(); }
-    void    AddLog(const std::string& fmt, const LogType& logType)
+    void    AddLog(const std::string& fmt, const LogType& logType=LogType::Info)
     {
         int old_size = Buf.size();
 
-        std::string str = GetTime()+ " " + GetLogMark(logType) + " " + fmt;
+        std::string str = GetTime()+ " " + GetLogMark(logType) + " " + fmt + "\n";
 
         Buf.append(str.c_str());
 
