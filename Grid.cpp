@@ -6,6 +6,8 @@
 #include "CellRule.h"
 #include <iostream>
 #include "Timer.h"
+
+
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     Timer timer;
     logger.AddLog("Initializing lookup rule");
@@ -155,10 +157,19 @@ void Grid::DisplayCells() {
 
 void Grid::SetPause(bool state) {
     _isPaused = state;
+    logger.AddLog(GetPauseInfo());
 }
 bool Grid::IsPaused() {
     return _isPaused;
 }
 void Grid::TogglePause() {
     _isPaused = !_isPaused;
+
+    logger.AddLog(GetPauseInfo());
+}
+
+std::string Grid::GetPauseInfo() {
+    std::string s = "Pause is ";
+    s+= (_isPaused ? "on" : "off");
+    return s;
 }

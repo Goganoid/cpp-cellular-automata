@@ -62,7 +62,7 @@ private:
     ///  @param[in] range [start_index,end_index] array to iterate through
     void UpdateCellsStates(const int * range);
 
-
+    std::string GetPauseInfo();
 
 
 public:
