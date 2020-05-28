@@ -9,12 +9,13 @@
 
 
 Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
+    logger = new AppLog(400,150);
     Timer timer;
-    logger.AddLog("Initializing lookup rule");
+    logger->AddLog("Creating lookup rule");
     timer.Start();
     rule = new LookupRule("B3/S23");
     timer.End();
-    logger.AddLog(timer.GetTime("initializing lookup rule"));
+    logger->AddLog(timer.GetTime("creating lookup rule"));
     _isPaused = true;
     _screen = &screen;
     _threads = threadsAmount;
@@ -28,25 +29,28 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
 
     // fill grid with empty cells using threads
     std::cout<<"Creating array"<<std::endl;
-    logger.AddLog("Creating array");
+    logger->AddLog("Creating array");
     timer.Start();
     // create empty grid
-    _grid.Init(nullptr, _height);
+//    _grid.Init(nullptr, _height);
+    _grid.Init(nullptr, _height*width);
     _rect_grid.Init(nullptr,_height*_width);
     for(int y=0;y<_height;y++){
-        _grid[y].Init(nullptr,_width);
+//        _grid[y].Init(nullptr,_width);
         _rect_grid[y].Init(nullptr,_width);
         pool->AddJob([this,y]() mutable {
             for(int x=0;x<_width;x++){
                 _rect_grid[y][x] = CellRect(x,y);
-                _grid[y][x] = {CellBehavior::Empty,CellBehavior::Empty};
-                _grid[y][x].SetRect(_rect_grid[y][x]);
+//                _grid[y][x] = {CellBehavior::Empty,CellBehavior::Empty};
+                _grid[y * _width + x] = {CellBehavior::Empty,CellBehavior::Empty};
+//                _grid[y][x].SetRect(_rect_grid[y][x]);
+                _grid[y * _width +x].SetRect(_rect_grid[y][x]);
             }
         });
     }
     pool->WaitAll();
     timer.End();
-    logger.AddLog(timer.GetTime("creating array"));
+    logger->AddLog(timer.GetTime("creating array"));
 //    timer.PrintTime("creating array");
 
 }
@@ -54,11 +58,14 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
 Grid::~Grid() {
     delete rule;
     delete pool;
+    delete logger;
     delete []storage;
 }
 
 Cell& Grid::GetCell(int x, int y) {
-    return _grid[y][x];
+//    return _grid[y][x];
+    if(x>=_width || x<0) y-=1;
+    return _grid[_width*y + x];
 }
 Cell& Grid::GetCell(int coords[2]) {
     return GetCell(coords[0],coords[1]);
@@ -125,7 +132,8 @@ void Grid::UpdateCellsStates(const int * range){
 }
 
 void Grid::CalculateCells() {
-    for(int step=0;step<1;step++) {
+    Timer timer;
+    timer.Start();
         for (int i = 0; i < _threads; i++) {
             pool->AddJob([this, i]() { this->UpdateCellsStates(_ranges[i]); });
         }
@@ -136,7 +144,8 @@ void Grid::CalculateCells() {
             pool->AddJob([this, i]() { this->CalculateZone(i, _ranges[i]); });
         }
         pool->WaitAll();
-    }
+    timer.End();
+    logger->AddLog(timer.GetTime("calculation"));
     unsigned int newSize=0;
     for(int i=0;i<_threads;i++){
         newSize+=storage[i].size();
@@ -159,7 +168,7 @@ void Grid::DisplayCells() {
 
 void Grid::SetPause(bool state) {
     _isPaused = state;
-    logger.AddLog(GetPauseInfo());
+    logger->AddLog(GetPauseInfo());
 }
 bool Grid::IsPaused() {
     return _isPaused;
@@ -167,7 +176,7 @@ bool Grid::IsPaused() {
 void Grid::TogglePause() {
     _isPaused = !_isPaused;
 
-    logger.AddLog(GetPauseInfo());
+    logger->AddLog(GetPauseInfo());
 }
 
 std::string Grid::GetPauseInfo() {

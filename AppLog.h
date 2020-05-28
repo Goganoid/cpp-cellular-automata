@@ -19,12 +19,15 @@ enum class LogType{
 
 
 
-struct AppLog
+class AppLog
 {
+private:
     ImGuiTextBuffer     Buf;
     ImGuiTextFilter     Filter;
     ImVector<int>       LineOffsets;        // Index to lines offset
     bool                ScrollToBottom;
+    bool                allowedToScroll = true;
+    unsigned int        _width,_height;
     std::string GetTime(){
         std::stringstream buffer;
         time_t curr_time;
@@ -51,6 +54,11 @@ struct AppLog
                 return "[NULL]";
         }
     }
+public:
+    AppLog(unsigned int width,unsigned int height){
+        _width = width;
+        _height = height;
+    }
     void    Clear()     { Buf.clear(); LineOffsets.clear(); }
     void    AddLog(const std::string& fmt, const LogType& logType=LogType::Info)
     {
@@ -68,13 +76,16 @@ struct AppLog
 
     void Draw(const char* title, bool* p_opened = NULL)
     {
-        ImGui::SetNextWindowSize(ImVec2(500,400), ImGuiCond_FirstUseEver);
+
+        ImGui::SetNextWindowSize(ImVec2(_width,_height), ImGuiCond_FirstUseEver);
+//        ImGui::SetNextWindowSize(ImVec2(_width,_height), ImGuiCond_Always);
         ImGui::Begin(title, p_opened);
         if (ImGui::Button("Clear")) Clear();
         ImGui::SameLine();
         bool copy = ImGui::Button("Copy");
         ImGui::SameLine();
         Filter.Draw("Filter", -100.0f);
+        ImGui::Checkbox("Scroll",&allowedToScroll);
         ImGui::Separator();
         ImGui::BeginChild("scrolling");
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,1));
@@ -97,7 +108,7 @@ struct AppLog
             ImGui::TextUnformatted(Buf.begin());
         }
 
-        if (ScrollToBottom)
+        if (ScrollToBottom && allowedToScroll)
             ImGui::SetScrollHere(1.0f);
         ScrollToBottom = false;
         ImGui::PopStyleVar();

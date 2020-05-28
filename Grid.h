@@ -30,7 +30,8 @@ private:
     int _width;
     int _height;
     sf::RenderTarget *  _screen;
-    OverflowArray<OverflowArray<Cell>> _grid;
+//    OverflowArray<OverflowArray<Cell>> _grid;
+    OverflowArray<Cell> _grid;
     OverflowArray<OverflowArray<CellRect>> _rect_grid;
     std::vector<sf::Vertex> _cells_to_draw;
     ThreadPool * pool;
@@ -66,7 +67,7 @@ private:
 
 
 public:
-    AppLog logger;
+    AppLog * logger;
     Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen);
     ~Grid();
 
