@@ -36,7 +36,7 @@ LookupRule::LookupRule(std::string stringRule){
         std::bitset<9> bitArray(i);
         int alive_cells = bitArray.count();
         lookupTable[i] = (neighsToBornTable[alive_cells] || ((neighsToSurviveTable[alive_cells-1])
-                         && bitArray[4]==1)) ? 1 : 0;
+                         && bitArray[4]==1)) ? CellBehavior::Alive : CellBehavior::Empty;
     }
 
 }

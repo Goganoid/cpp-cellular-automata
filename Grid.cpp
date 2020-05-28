@@ -106,7 +106,7 @@ void Grid::CalculateZone(int id,const int range[2]){
                 temp.emplace_back(cell->_rect->objectRect[3]);
             }
             if(!_isPaused) {
-                cell->SetNextState(static_cast<CellBehavior>(rule->Lookup(environment)));
+                cell->SetNextState(rule->Lookup(environment));
                 }
             }
         }
@@ -151,8 +151,10 @@ void Grid::CalculateCells() {
 
 
 void Grid::DisplayCells() {
-        _screen->draw(&_cells_to_draw[0], _cells_to_draw.size(), sf::Quads);
-        _cells_to_draw.clear();
+        if(_cells_to_draw.size()!=0) {
+            _screen->draw(&_cells_to_draw[0], _cells_to_draw.size(), sf::Quads);
+            _cells_to_draw.clear();
+        }
 }
 
 void Grid::SetPause(bool state) {

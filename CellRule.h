@@ -9,14 +9,15 @@
 #include <algorithm>
 #include <sstream>
 #include <map>
-
+#include "Cell.h"
 class LookupRule{
 private:
-    std::unordered_map  <int,int> lookupTable;
+//    std::unordered_map  <int,short int> lookupTable;
+    std::unordered_map  <int,CellBehavior> lookupTable;
     std::map<int,bool> neighsToBornTable;
     std::map<int,bool> neighsToSurviveTable;
 public:
-    [[nodiscard]] int Lookup(int i)  { return lookupTable[i];}
+    [[nodiscard]] CellBehavior Lookup(int i)  { return lookupTable[i];}
     explicit LookupRule(std::string stringRule);
 };
 
