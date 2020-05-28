@@ -12,11 +12,13 @@ private:
 public:
     T& operator[](long int index){
         if(index<0){
+//            std::cout<<"UnderFlow "<< index <<std::endl;
             index = size + index;
             return operator[](index);
         }
 
         if(index>=size){
+//            std::cout<<"Overflow "<< index <<std::endl;
             index = index - size;
             return operator[](index);
         }

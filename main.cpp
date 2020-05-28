@@ -41,6 +41,7 @@ int main()
     ImGui::SFML::Init(window);
     // change window size to upscale pixels
     sf::Vector2f newScreenSize{1000,1000};
+//    sf::Vector2f newScreenSize{16,16};
     sf::Vector2f screenCenter{newScreenSize.x/2,newScreenSize.y/2};
     setViewSize(window,screenCenter, newScreenSize);
     sf::RenderTexture buffer;

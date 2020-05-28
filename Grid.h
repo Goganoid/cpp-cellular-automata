@@ -29,7 +29,9 @@ private:
     int _width;
     int _height;
     sf::RenderTarget *  _screen;
+    // saves CellBehaviour(alive or empty)
     OverflowArray<Cell> _grid;
+    // saves cell vertices for drawing
     OverflowArray<OverflowArray<CellRect>> _rect_grid;
     std::vector<sf::Vertex> _cells_to_draw;
     ThreadPool * pool;
@@ -52,7 +54,7 @@ private:
     /// <br> Updates  _cells_to_draw_coords
     /// @param[in] range [start_index,end_index] array to iterate through
 
-    void CalculateZone(int id,const int range[2]);
+    void CalculateZone(int id, int* range[2]);
 
     /// Function that runs in threads
     /// Iterates through a part of the grid matrix
