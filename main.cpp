@@ -67,8 +67,6 @@ int main()
     fileBrowser.SetTitle("Choose file");
 
 
-    world.logger.AddLog("Test",LogType::Info);
-//    fileBrowser.SetTypeFilters({".rle",".txt"});
 
 
     Timer timer;
@@ -108,9 +106,10 @@ int main()
 
         ImGui::SFML::Update(window, deltaClock.restart());
 
-        world.logger.Draw("TEstTitle");
-
-        ImGui::Begin("Sample window");
+        world.logger->Draw("Logger");
+        ImGui::SetNextWindowSize(ImVec2(275,150), ImGuiCond_Always);
+        ImGui::SetNextWindowPos(ImVec2(0,0),ImGuiCond_Always);
+        ImGui::Begin("Game Of Life");
         ImGui::ColorEdit3("Grid Color",gridColor);
 
         if(ImGui::Button("Choose pattern")){
