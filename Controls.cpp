@@ -52,13 +52,13 @@ void MouseControls::SwitchMouse(sf::Event event){
     // move viewport
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
-        _center.x -= _mouseViewPortPos.x - _prevMouseViewPortPos.x;
-        _center.y -= _mouseViewPortPos.y - _prevMouseViewPortPos.y;
+        _center.x -= (float)_mouseViewPortPos.x - _prevMouseViewPortPos.x;
+        _center.y -= (float)_mouseViewPortPos.y - _prevMouseViewPortPos.y;
     }
     // zoom
     if (event.type == sf::Event::MouseWheelMoved) {
-        _viewportSize.x -= event.mouseWheel.delta * zoomModifier;
-        _viewportSize.y -= event.mouseWheel.delta * zoomModifier;
+        _viewportSize.x -= (float)event.mouseWheel.delta * zoomModifier;
+        _viewportSize.y -= (float)event.mouseWheel.delta * zoomModifier;
     }
 
     // Cell placing

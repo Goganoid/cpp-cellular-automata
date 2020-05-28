@@ -22,7 +22,6 @@ class LookupRule;
 
 class Grid{
 private:
-    int step = 0;
     int _threads;
     LookupRule* rule;
     int ** _ranges;
@@ -30,7 +29,6 @@ private:
     int _width;
     int _height;
     sf::RenderTarget *  _screen;
-//    OverflowArray<OverflowArray<Cell>> _grid;
     OverflowArray<Cell> _grid;
     OverflowArray<OverflowArray<CellRect>> _rect_grid;
     std::vector<sf::Vertex> _cells_to_draw;
@@ -63,7 +61,7 @@ private:
     ///  @param[in] range [start_index,end_index] array to iterate through
     void UpdateCellsStates(const int * range);
 
-    std::string GetPauseInfo();
+    std::string GetPauseInfo() const;
 
 
 public:
@@ -72,15 +70,17 @@ public:
     ~Grid();
 
     Cell& GetCell(int x, int y);
-    Cell& GetCell(int coords[2]);
-    Cell& GetCell(std::vector<int> & coords);
+
+    [[maybe_unused]] Cell& GetCell(int coords[2]);
+    [[maybe_unused]] Cell& GetCell(std::vector<int> & coords);
     [[nodiscard]] int GetHeight() const { return _height;}
     [[nodiscard]] int GetWidth() const  { return _width;}
     void CalculateCells();
     void DisplayCells();
 
-    void SetPause(bool state);
-    bool IsPaused();
+    [[maybe_unused]] void SetPause(bool state);
+
+    [[maybe_unused]] bool IsPaused() const;
     void TogglePause();
 
 };

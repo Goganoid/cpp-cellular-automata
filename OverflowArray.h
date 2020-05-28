@@ -23,7 +23,7 @@ public:
 
         return ptr[index];
     }
-    OverflowArray(T* p = nullptr, int s = 0)
+    explicit OverflowArray(T* p = nullptr, int s = 0)
     {
         size = s;
         ptr = nullptr;

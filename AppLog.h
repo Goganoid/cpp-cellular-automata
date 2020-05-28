@@ -78,7 +78,6 @@ public:
     {
 
         ImGui::SetNextWindowSize(ImVec2(_width,_height), ImGuiCond_FirstUseEver);
-//        ImGui::SetNextWindowSize(ImVec2(_width,_height), ImGuiCond_Always);
         ImGui::Begin(title, p_opened);
         if (ImGui::Button("Clear")) Clear();
         ImGui::SameLine();

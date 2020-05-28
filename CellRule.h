@@ -12,7 +12,6 @@
 #include "Cell.h"
 class LookupRule{
 private:
-//    std::unordered_map  <int,short int> lookupTable;
     std::unordered_map  <int,CellBehavior> lookupTable;
     std::map<int,bool> neighsToBornTable;
     std::map<int,bool> neighsToSurviveTable;

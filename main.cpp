@@ -37,12 +37,11 @@ int main()
     int threadCount = 8;
     // create window
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Game of life");
-    window.setFramerateLimit(30);
+    window.setFramerateLimit(50);
     ImGui::SFML::Init(window);
     // change window size to upscale pixels
     sf::Vector2f newScreenSize{1000,1000};
-//    sf::Vector2f newScreenSize{160,160};
-    sf::Vector2f screenCenter{30,30};
+    sf::Vector2f screenCenter{newScreenSize.x/2,newScreenSize.y/2};
     setViewSize(window,screenCenter, newScreenSize);
     sf::RenderTexture buffer;
     buffer.create(newScreenSize.x,newScreenSize.y);
@@ -57,7 +56,6 @@ int main()
     sf::Clock deltaClock;
     float framerate;
 
-    bool isPaused = false;
 
     MouseControls controls(world, cursor, window);
 
@@ -105,7 +103,7 @@ int main()
         }
 
         ImGui::SFML::Update(window, deltaClock.restart());
-
+        ImGui::SetNextWindowPos(ImVec2(276,0),ImGuiCond_Always);
         world.logger->Draw("Logger");
         ImGui::SetNextWindowSize(ImVec2(275,150), ImGuiCond_Always);
         ImGui::SetNextWindowPos(ImVec2(0,0),ImGuiCond_Always);
@@ -129,8 +127,6 @@ int main()
             window.clear(sf::Color::Black);
             buffer.clear(sf::Color(gridColor[0]*255,gridColor[1]*255,gridColor[2]*255));
             // calculate cells new state
-
-
 
             world.CalculateCells();
 

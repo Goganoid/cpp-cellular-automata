@@ -32,18 +32,14 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     logger->AddLog("Creating array");
     timer.Start();
     // create empty grid
-//    _grid.Init(nullptr, _height);
     _grid.Init(nullptr, _height*width);
     _rect_grid.Init(nullptr,_height*_width);
     for(int y=0;y<_height;y++){
-//        _grid[y].Init(nullptr,_width);
         _rect_grid[y].Init(nullptr,_width);
         pool->AddJob([this,y]() mutable {
             for(int x=0;x<_width;x++){
                 _rect_grid[y][x] = CellRect(x,y);
-//                _grid[y][x] = {CellBehavior::Empty,CellBehavior::Empty};
                 _grid[y * _width + x] = {CellBehavior::Empty,CellBehavior::Empty};
-//                _grid[y][x].SetRect(_rect_grid[y][x]);
                 _grid[y * _width +x].SetRect(_rect_grid[y][x]);
             }
         });
@@ -51,7 +47,6 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     pool->WaitAll();
     timer.End();
     logger->AddLog(timer.GetTime("creating array"));
-//    timer.PrintTime("creating array");
 
 }
 
@@ -63,14 +58,15 @@ Grid::~Grid() {
 }
 
 Cell& Grid::GetCell(int x, int y) {
-//    return _grid[y][x];
     if(x>=_width || x<0) y-=1;
     return _grid[_width*y + x];
 }
-Cell& Grid::GetCell(int coords[2]) {
+
+[[maybe_unused]] Cell& Grid::GetCell(int coords[2]) {
     return GetCell(coords[0],coords[1]);
 }
-Cell& Grid::GetCell(std::vector<int> & coords) {
+
+[[maybe_unused]] Cell& Grid::GetCell(std::vector<int> & coords) {
     return GetCell(coords[0],coords[1]);
 }
 
@@ -160,17 +156,18 @@ void Grid::CalculateCells() {
 
 
 void Grid::DisplayCells() {
-        if(_cells_to_draw.size()!=0) {
+        if(!_cells_to_draw.empty()) {
             _screen->draw(&_cells_to_draw[0], _cells_to_draw.size(), sf::Quads);
             _cells_to_draw.clear();
         }
 }
 
-void Grid::SetPause(bool state) {
+[[maybe_unused]] void Grid::SetPause(bool state) {
     _isPaused = state;
     logger->AddLog(GetPauseInfo());
 }
-bool Grid::IsPaused() {
+
+[[maybe_unused]] bool Grid::IsPaused() const {
     return _isPaused;
 }
 void Grid::TogglePause() {
@@ -179,7 +176,7 @@ void Grid::TogglePause() {
     logger->AddLog(GetPauseInfo());
 }
 
-std::string Grid::GetPauseInfo() {
+std::string Grid::GetPauseInfo() const {
     std::string s = "Pause is ";
     s+= (_isPaused ? "on" : "off");
     return s;
