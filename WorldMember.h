@@ -18,7 +18,7 @@ public:
     int GetX() const;
     int GetY() const;
     void SetPos(int x,int y);
-    virtual void DrawTo(sf::RenderTarget *renderTarget);
-    virtual void Move(int x, int y);
+    void DrawTo(sf::RenderTarget *renderTarget);
+    void Move(int x, int y);
 };
 #endif //CPP_LIFE_WORLDMEMBER_H
