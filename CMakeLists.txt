@@ -2,11 +2,22 @@ cmake_minimum_required(VERSION 3.15)
 project(cpp_life)
 
 set(CMAKE_CXX_STANDARD 20)
-set(SFML_DIR "${PROJECT_SOURCE_DIR}/SFML/lib/cmake/SFML")
-set(SFML_BIN_D "${PROJECT_SOURCE_DIR}/SFML/bin-debug")
-set(SFML_BIN_R "${PROJECT_SOURCE_DIR}/SFML/bin-release")
-set(BIN_DIR "${PROJECT_SOURCE_DIR}/build")
 
+
+
+set(SFML_DIR "${PROJECT_SOURCE_DIR}/SFML/lib/cmake/SFML")
+IF (CMAKE_BUILD_TYPE MATCHES Debug)
+    set(SFML_BIN "${PROJECT_SOURCE_DIR}/SFML/bin-debug")
+    set(BIN_DIR "${PROJECT_SOURCE_DIR}/build/debug")
+ELSEIF(CMAKE_BUILD_TYPE MATCHES Release)
+    set(SFML_BIN "${PROJECT_SOURCE_DIR}/SFML/bin-release")
+    set(BIN_DIR "${PROJECT_SOURCE_DIR}/build/release")
+ENDIF()
+
+
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${BIN_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BIN_DIR})
 
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
@@ -19,12 +30,9 @@ add_executable(cpp_life main.cpp Grid.h Cell.h Grid.cpp Cell.cpp Cursor.h Cursor
 add_custom_command(
         TARGET cpp_life
         POST_BUILD
-        # DEBUG
-        COMMENT "copying from ${SFML_BIN_D}/ to ${BIN_DIR}/debug"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_BIN_D} ${BIN_DIR}/debug
-        # RELEASE
-        COMMENT "copying from ${SFML_BIN_R}/ to ${BIN_DIR}/release"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_BIN_R} ${BIN_DIR}/release
+
+        COMMENT "copying from ${SFML_BIN}/ to ${BIN_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_BIN} ${BIN_DIR}
 )
 
 include_directories(SFML/include)
