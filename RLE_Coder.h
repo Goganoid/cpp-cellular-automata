@@ -12,6 +12,7 @@
 
 
 struct RLEReadResult{
+    std::string rule;
     Point point;
     std::vector<Point> pattern;
 };
@@ -98,6 +99,7 @@ RLEReadResult OpenRLE_File(const std::string& filePath){
         RLEReadResult result;
         result.point.x = std::stoi(strParameters[0]);
         result.point.y = std::stoi(strParameters[1]);
+        result.rule = strParameters[2];
         result.pattern = FromRLE(rle);
         return result;
     }
