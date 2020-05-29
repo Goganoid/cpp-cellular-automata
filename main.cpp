@@ -13,8 +13,12 @@
 #include "Timer.h"
 
 
-
-
+int MakeDivisibleBy(int value, int div){
+    while(value%div!=0){
+        value+=1;
+    }
+    return value;
+}
 
 
 void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
@@ -22,14 +26,9 @@ void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size)
     window.setView(view);
 }
 
+
 int main()
 {
-
-
-
-    auto res = FromRLE("4b2o6b2o4b$3bobo6bobo3b$3bo10bo3b$2obo10bob2o$2obobo2b2o2bobob2o$3bobo\n"
-                       "bo2bobobo3b$3bobobo2bobobo3b$2obobo2b2o2bobob2o$2obo10bob2o$3bo10bo3b$\n"
-                       "3bobo6bobo3b$4b2o6b2o!");
 
 
     auto r = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
@@ -40,16 +39,19 @@ int main()
     window.setFramerateLimit(50);
     ImGui::SFML::Init(window);
     // change window size to upscale pixels
-    sf::Vector2f newScreenSize{1000,1000};
-//    sf::Vector2f newScreenSize{16,16};
-    sf::Vector2f screenCenter{newScreenSize.x/2,newScreenSize.y/2};
-    setViewSize(window,screenCenter, newScreenSize);
     sf::RenderTexture buffer;
-    buffer.create(newScreenSize.x,newScreenSize.y);
+
+
+//    sf::Vector2f newScreenSize{1000,1000};
+    int newScreenSize[2] = {1000,1000};
+    sf::Vector2f screenCenter{newScreenSize[0]/2.f,newScreenSize[1]/2.f};
+    setViewSize(window,screenCenter, sf::Vector2f (newScreenSize[0],newScreenSize[1]));
+
+    buffer.create(newScreenSize[0],newScreenSize[1]);
     sf::Sprite bufferSprite(buffer.getTexture());
 
     // create grid and get access to grid 2d array
-    Grid world = Grid(newScreenSize.x, newScreenSize.y, threadCount, buffer);
+    Grid world = Grid(newScreenSize[0], newScreenSize[1],r.rule, threadCount, buffer);
     Cursor cursor = Cursor(50,50);
 
     // Create clock to count framerate
@@ -66,7 +68,7 @@ int main()
     fileBrowser.SetTitle("Choose file");
 
 
-
+    bool creatingNewGrid = false;
 
     Timer timer;
 
@@ -96,6 +98,7 @@ int main()
 
                 // place smth
                 if(event.key.code==sf::Keyboard::Z){
+                    world.Erase();
                     for(Point point:r.pattern){
                         world.GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
                     }
@@ -119,11 +122,51 @@ int main()
 
         if(fileBrowser.HasSelected())
         {
-            std::cout << "Selected filename " << fileBrowser.GetSelected().string() << std::endl;
             r = OpenRLE_File(fileBrowser.GetSelected().string());
+            creatingNewGrid = true;
+            newScreenSize[0]=MakeDivisibleBy(r.point.x,threadCount);
+            newScreenSize[1] = MakeDivisibleBy(r.point.y,threadCount);
+            screenCenter.x = newScreenSize[0]/2.f;
+            screenCenter.y = newScreenSize[1]/2.f;
             fileBrowser.ClearSelected();
+
         }
         ImGui::End();
+        if(creatingNewGrid){
+            world.SetPause(true);
+
+
+            ImGui::Begin("Select grid size");
+            ImGui::Text("Grid size is ");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(1, 1, 0, 1), "%i, %i", (int) newScreenSize[0], (int) newScreenSize[1]);
+
+            bool sizeDividesByThreadCount = true;
+            ImGui::Text("Change to:");
+
+            ImGui::InputInt2("New Size",newScreenSize);
+            if(newScreenSize[0]%threadCount!=0 || newScreenSize[1]%threadCount!=0){
+                sizeDividesByThreadCount = false;
+                ImGui::TextColored(ImVec4(1,0,0,1),"X/Y must be divided by the number of threads(%i) completely!",threadCount);
+            }
+            else{
+                sizeDividesByThreadCount = true;
+            }
+
+            if(ImGui::Button("OK") && sizeDividesByThreadCount){
+
+                buffer.create(newScreenSize[0],newScreenSize[1]);
+                bufferSprite = sf::Sprite(buffer.getTexture());
+                setViewSize(window,screenCenter, sf::Vector2f (newScreenSize[0],newScreenSize[1]));
+                controls.UpdateConfiguration();
+
+                world.ChangeRule(r.rule);
+                world.ChangeSize(newScreenSize[0],newScreenSize[1]);
+                creatingNewGrid = false;
+            }
+            ImGui::End();
+
+        }
 
             window.clear(sf::Color::Black);
             buffer.clear(sf::Color(gridColor[0]*255,gridColor[1]*255,gridColor[2]*255));

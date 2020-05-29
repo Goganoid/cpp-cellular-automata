@@ -8,13 +8,13 @@
 #include "Timer.h"
 
 
-Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
+Grid::Grid(int width, int height,std::string& ruleString, int threadsAmount,sf::RenderTarget& screen) {
     logger = new AppLog(400,150);
 
     logger->AddLog("Creating lookup rule");
     Timer timer;
     timer.Start();
-    rule = new LookupRule("B3/S23");
+    rule = new LookupRule(ruleString);
     timer.End();
     logger->AddLog(timer.GetTime("creating lookup rule"));
 
@@ -50,6 +50,44 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
 
 }
 
+void Grid::ChangeRule(std::string &ruleString) {
+    delete rule;
+    rule = new LookupRule(ruleString);
+}
+void Grid::ChangeSize(int width, int height) {
+    _width = width;
+    _height = height;
+
+    delete [] _ranges;
+    delete [] _grid;
+    delete [] _rect_grid;
+
+    _ranges = DivideGridIntoZones(_threads,_width);
+    _grid = new Cell[_height*_width];
+    _rect_grid = new CellRect[_height*_width];
+    for(int y=0;y<_height;y++){
+        pool->AddJob([this,y]() mutable {
+            for(int x=0;x<_width;x++){
+                _rect_grid[y * _width + x] = CellRect(x,y);
+                _grid[y * _width + x] = {CellBehavior::Empty,CellBehavior::Empty};
+                _grid[y * _width +x].SetRect(_rect_grid[y * _width + x]);
+            }
+        });
+    }
+    pool->WaitAll();
+}
+
+void Grid::Erase() {
+    for(int y=0;y<_height;y++){
+        pool->AddJob([this,y]() mutable {
+            for(int x=0;x<_width;x++){
+                GetCell(x,y).SetState(CellBehavior::Empty);
+                GetCell(x,y).SetNextState(CellBehavior::Empty);
+            }
+        });
+    }
+    pool->WaitAll();
+}
 Grid::~Grid() {
     delete rule;
     delete pool;

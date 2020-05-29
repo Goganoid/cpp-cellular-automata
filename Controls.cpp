@@ -7,8 +7,7 @@ MouseControls::MouseControls(Grid& grid, Cursor& cursor, sf::RenderWindow& windo
 _grid = &grid;
 _cursor = &cursor;
 _window = &window;
-_center = window.getView().getCenter();
-_viewportSize = window.getView().getSize();
+UpdateConfiguration();
 _mouseViewPortPos = mouseToViewPortPos(*_window, _viewportSize);
 _prevMouseViewPortPos = _mouseViewPortPos;
 }
@@ -16,6 +15,11 @@ _prevMouseViewPortPos = _mouseViewPortPos;
 void MouseControls::setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
     sf::View view(center,size);
     window.setView(view);
+}
+
+void MouseControls::UpdateConfiguration() {
+    _center = _window->getView().getCenter();
+    _viewportSize = _window->getView().getSize();
 }
 
 sf::Vector2i MouseControls::mouseToCursorPos(sf::RenderWindow& window,sf::Vector2f screenSize){
@@ -51,7 +55,6 @@ void MouseControls::SwitchMouse(sf::Event event){
     }
     // move viewport
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-
         _center.x -= (float)_mouseViewPortPos.x - _prevMouseViewPortPos.x;
         _center.y -= (float)_mouseViewPortPos.y - _prevMouseViewPortPos.y;
     }
@@ -62,17 +65,19 @@ void MouseControls::SwitchMouse(sf::Event event){
     }
 
     // Cell placing
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-        _grid
-                ->GetCell(_cursor->GetX(),_cursor->GetY())
-                .SetNextState(CellBehavior::Alive);
-    }
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-        _grid
-                ->GetCell(_cursor->GetX(),_cursor->GetY())
-                .SetNextState(CellBehavior::Empty);
-    }
+    if(_grid->InBounds(_cursor->GetX(),_cursor->GetY())) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
+            _grid
+                    ->GetCell(_cursor->GetX(), _cursor->GetY())
+                    .SetNextState(CellBehavior::Alive);
+        }
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+            _grid
+                    ->GetCell(_cursor->GetX(), _cursor->GetY())
+                    .SetNextState(CellBehavior::Empty);
+        }
+    }
     _prevMouseViewPortPos = _mouseViewPortPos;
     setViewSize(*_window,_center,_viewportSize);
 }

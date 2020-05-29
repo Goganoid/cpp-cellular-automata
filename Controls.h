@@ -22,6 +22,8 @@ public:
 
     MouseControls(Grid &grid, Cursor &cursor, sf::RenderWindow &window);
 
+    void UpdateConfiguration();
+
     static void setViewSize(sf::RenderWindow &window, sf::Vector2f center, sf::Vector2f size);
 
     static sf::Vector2i mouseToCursorPos(sf::RenderWindow &window, sf::Vector2f screenSize);

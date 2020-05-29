@@ -68,7 +68,12 @@ private:
 
 public:
     AppLog * logger;
-    Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen);
+    Grid(int width, int height,std::string& ruleString, int threadsAmount,sf::RenderTarget& screen);
+    void ChangeRule(std::string& ruleString);
+    void ChangeSize(int width, int height);
+    void Erase();
+
+    bool InBounds(const int& x, const int& y){return ((x>=0 && x<=_width) && (y>=0 && y<=_height));}
     ~Grid();
 
     Cell& GetCell(int x, int y);
