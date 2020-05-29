@@ -33,15 +33,14 @@ Grid::Grid(int width, int height, int threadsAmount,sf::RenderTarget& screen) {
     logger->AddLog("Creating array");
     timer.Start();
     // create empty grid
-    _grid.Init(nullptr, _height*_width);
-    _rect_grid.Init(nullptr,_height*_width);
+    _grid = new Cell[_height*_width];
+    _rect_grid = new CellRect[_height*_width];
     for(int y=0;y<_height;y++){
-        _rect_grid[y].Init(nullptr,_width);
         pool->AddJob([this,y]() mutable {
             for(int x=0;x<_width;x++){
-                _rect_grid[y][x] = CellRect(x,y);
+                _rect_grid[y * _width + x] = CellRect(x,y);
                 _grid[y * _width + x] = {CellBehavior::Empty,CellBehavior::Empty};
-                _grid[y * _width +x].SetRect(_rect_grid[y][x]);
+                _grid[y * _width +x].SetRect(_rect_grid[y * _width + x]);
             }
         });
     }
@@ -56,12 +55,13 @@ Grid::~Grid() {
     delete pool;
     delete logger;
     delete []storage;
+    delete []_grid;
+    delete []_rect_grid;
 }
 
 Cell& Grid::GetCell(int x, int y) {
     if(y>=_height) y-=_height;
     if(x>=_width || x<0) y-=1;
-//    std::cout<<x<<" "<<y<<" => "<<_width*y +x<<std::endl;
     return _grid[_width*y + x];
 }
 
@@ -91,16 +91,16 @@ int ** Grid::DivideGridIntoZones(int zones, int length){
 }
 
 
-void Grid::CalculateZone(int id, int* range[2]){
+void Grid::CalculateZone(int id, int range[2]){
     std::vector<sf::Vertex> temp;
     Cell * cell;
     for(int y=1;y<=_height;y++){
         // precalculating part of this value in outer loop to reduce number of memory calls
-        int environment=   (GetCell(*range[0],y-1).GetState() ? 32 : 0) +    (GetCell(*range[0]+1,y-1).GetState() ?  4 : 0)
-                         + (GetCell(*range[0],   y  ).GetState() ? 16 : 0) + (GetCell(*range[0]+1   ,y  ).GetState() ?  2 : 0)
-                         + (GetCell(*range[0],y+1).GetState() ?  8 : 0) +    (GetCell(*range[0]+1,y+1).GetState() ?  1 : 0);
+        int environment=   (GetCell(range[0],y-1).GetState() ? 32 : 0) + (GetCell(range[0]+1,y-1).GetState() ?  4 : 0)
+                         + (GetCell(range[0],   y  ).GetState() ? 16 : 0) + (GetCell(range[0]+1   ,y  ).GetState() ?  2 : 0)
+                         + (GetCell(range[0],y+1).GetState() ?  8 : 0) + (GetCell(range[0]+1,y+1).GetState() ?  1 : 0);
 
-        for(int x=*range[0]+1;x<=*range[1];x++){
+        for(int x=range[0]+1;x<=range[1];x++){
             environment = ((environment % 64) * 8)
                           + (GetCell(x+1,y-1).GetState() ? 4 : 0)
                           + (GetCell(x+1,y  ).GetState() ? 2 : 0)
@@ -143,7 +143,7 @@ void Grid::CalculateCells() {
 
     // calculate next state
     for (int i = 0; i < _threads; i++) {
-        pool->AddJob([this, i]() { this->CalculateZone(i, &_ranges[i]); });
+        pool->AddJob([this, i]() { this->CalculateZone(i, _ranges[i]); });
     }
     pool->WaitAll();
 
