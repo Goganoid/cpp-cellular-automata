@@ -71,6 +71,7 @@ public:
         for (int new_size = Buf.size(); old_size < new_size; old_size++)
             if (Buf[old_size] == '\n')
                 LineOffsets.push_back(old_size);
+        if(Buf.size()>=100000) Clear();
         ScrollToBottom = true;
     }
 
