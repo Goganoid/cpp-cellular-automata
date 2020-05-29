@@ -95,7 +95,7 @@ void Grid::CalculateZone(int id, int range[2]){
     std::vector<sf::Vertex> temp;
     Cell * cell;
     for(int y=1;y<=_height;y++){
-        // precalculating part of this value in outer loop to reduce number of memory calls
+        // precalculating part of this value in outer loop to reduce number of memory accesses
         int environment=   (GetCell(range[0],y-1).GetState() ? 32 : 0) + (GetCell(range[0]+1,y-1).GetState() ?  4 : 0)
                          + (GetCell(range[0],   y  ).GetState() ? 16 : 0) + (GetCell(range[0]+1   ,y  ).GetState() ?  2 : 0)
                          + (GetCell(range[0],y+1).GetState() ?  8 : 0) + (GetCell(range[0]+1,y+1).GetState() ?  1 : 0);
