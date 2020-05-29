@@ -23,7 +23,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BIN_DIR})
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 find_package(OpenGL)
 
-add_executable(cpp_life main.cpp Grid.h Cell.h Grid.cpp Cell.cpp Cursor.h Cursor.cpp
+add_executable(cpp_life main.cpp Grid.h Cell.h Grid.cpp Cursor.h
         WorldMember.h WorldMember.cpp ThreadPool.h CellRule.h OverflowArray.h
         RLE_Coder.h Controls.h Controls.cpp CellRule.cpp
         imgui/imgui.cpp imgui/imgui_draw.cpp imgui/imgui_widgets.cpp imgui/imgui-SFML.cpp imgui/imgui_demo.cpp imgui/imfilebrowser.h hlife.h Point.h Timer.h AppLog.h)

@@ -14,8 +14,8 @@ enum CellBehavior: uint8_t{
 };
 class CellRect: public WorldMember{
 public:
-    CellRect();
-    CellRect(int x, int y);
+    CellRect():WorldMember(1,1,sf::Color::White) {};
+    CellRect(int x, int y):WorldMember(x,y,sf::Color::White) {};
 };
 struct Cell{
     CellBehavior	current_behavior : 4;
