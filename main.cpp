@@ -31,7 +31,7 @@ int main()
 {
 
 
-    auto r = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
+    auto pattern = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
 
     int threadCount = 8;
     // create window
@@ -42,7 +42,6 @@ int main()
     sf::RenderTexture buffer;
 
 
-//    sf::Vector2f newScreenSize{1000,1000};
     int newScreenSize[2] = {1000,1000};
     sf::Vector2f screenCenter{newScreenSize[0]/2.f,newScreenSize[1]/2.f};
     setViewSize(window,screenCenter, sf::Vector2f (newScreenSize[0],newScreenSize[1]));
@@ -51,7 +50,7 @@ int main()
     sf::Sprite bufferSprite(buffer.getTexture());
 
     // create grid and get access to grid 2d array
-    Grid world = Grid(newScreenSize[0], newScreenSize[1],r.rule, threadCount, buffer);
+    Grid world = Grid(newScreenSize[0], newScreenSize[1], pattern.rule, threadCount, buffer);
     Cursor cursor = Cursor(50,50);
 
     // Create clock to count framerate
@@ -99,7 +98,7 @@ int main()
                 // place smth
                 if(event.key.code==sf::Keyboard::Z){
                     world.Erase();
-                    for(Point point:r.pattern){
+                    for(Point point:pattern.pattern){
                         world.GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
                     }
                 }
@@ -122,10 +121,10 @@ int main()
 
         if(fileBrowser.HasSelected())
         {
-            r = OpenRLE_File(fileBrowser.GetSelected().string());
+            pattern = OpenRLE_File(fileBrowser.GetSelected().string());
             creatingNewGrid = true;
-            newScreenSize[0]=MakeDivisibleBy(r.point.x,threadCount);
-            newScreenSize[1] = MakeDivisibleBy(r.point.y,threadCount);
+            newScreenSize[0]=MakeDivisibleBy(pattern.point.x, threadCount);
+            newScreenSize[1] = MakeDivisibleBy(pattern.point.y, threadCount);
             screenCenter.x = newScreenSize[0]/2.f;
             screenCenter.y = newScreenSize[1]/2.f;
             fileBrowser.ClearSelected();
@@ -160,7 +159,7 @@ int main()
                 setViewSize(window,screenCenter, sf::Vector2f (newScreenSize[0],newScreenSize[1]));
                 controls.UpdateConfiguration();
 
-                world.ChangeRule(r.rule);
+                world.ChangeRule(pattern.rule);
                 world.ChangeSize(newScreenSize[0],newScreenSize[1]);
                 creatingNewGrid = false;
             }
