@@ -30,18 +30,14 @@ void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size)
 int main() {
 
 
-    RLEReadResult pattern;
 
     int threadCount = 8;
     // create window
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Game of life");
-//    unsigned int framerateLimit = 50;
-//    window.setFramerateLimit(framerateLimit);
     ImGui::SFML::Init(window);
 
     // change window size to upscale pixels
     sf::RenderTexture buffer;
-//    int newScreenSize[2] = {1000, 1000};
     int newScreenSize[2] = {160, 160};
     sf::Vector2f screenCenter{newScreenSize[0] / 2.f, newScreenSize[1] / 2.f};
     setViewSize(window, screenCenter, sf::Vector2f(newScreenSize[0], newScreenSize[1]));
@@ -102,11 +98,10 @@ int main() {
             fileBrowser.Display();
 
             if (fileBrowser.HasSelected()) {
-                pattern = OpenRLE_File(fileBrowser.GetSelected().string());
-                controls.SetPattern(pattern);
+                controls.SetPattern(OpenRLE_File(fileBrowser.GetSelected().string()));
                 creatingNewGrid = true;
-                newScreenSize[0] = MakeDivisibleBy(pattern.point.x, threadCount);
-                newScreenSize[1] = MakeDivisibleBy(pattern.point.y, threadCount);
+                newScreenSize[0] = MakeDivisibleBy(controls.GetPattern().point.x, threadCount);
+                newScreenSize[1] = MakeDivisibleBy(controls.GetPattern().point.y, threadCount);
                 int biggest = std::max(newScreenSize[0], newScreenSize[1]);
                 newScreenSize[0] = biggest;
                 newScreenSize[1] = biggest;
@@ -144,7 +139,7 @@ int main() {
                     setViewSize(window, screenCenter, sf::Vector2f(newScreenSize[0], newScreenSize[1]));
                     controls.UpdateMouseConfiguration();
 
-                    world.ChangeRule(pattern.rule);
+                    world.ChangeRule(controls.GetPattern().rule);
                     world.ChangeSize(newScreenSize[0], newScreenSize[1]);
                     creatingNewGrid = false;
                 }
