@@ -1,26 +1,16 @@
 //
 // Created by egor0 on 5/12/2020.
 //
-
+/// It is unused, but the code is working///
+/// I spent a lot of time on this, so I can not delete it///
 #ifndef CPP_LIFE_HLIFE_H
 #define CPP_LIFE_HLIFE_H
 #include <functional>
 #include <unordered_map>
 #include <sstream>
 #include "RLE_Coder.h"
-#define mask = (1<<63)-1
+#include <map>
 
-
-//struct Point{
-//    int x;
-//    int y;
-//    bool const operator==(const Point &o) const {
-//        return x == o.x && y == o.y;
-//    }
-//
-//    bool const operator<(const Point &o) const {
-//        return x < o.x || (x == o.x && y < o.y);}
-//};
 
 template<typename T,typename X>
 X map_pop(std::map<T,X> * map,T val, X else_value){

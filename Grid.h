@@ -73,7 +73,7 @@ public:
     void ChangeSize(int width, int height);
     void Erase();
 
-    bool InBounds(const int& x, const int& y){return ((x>=0 && x<=_width) && (y>=0 && y<=_height));}
+    bool InBounds(const int& x, const int& y) const{return ((x>=0 && x<=_width) && (y>=0 && y<=_height));}
     ~Grid();
 
     Cell& GetCell(int x, int y);

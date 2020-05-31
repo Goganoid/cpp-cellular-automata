@@ -5,6 +5,7 @@
 #include <thread>
 #include "CellRule.h"
 #include <iostream>
+#include <utility>
 #include "Timer.h"
 
 
@@ -12,9 +13,9 @@ Grid::Grid(int width, int height,std::string ruleString, int threadsAmount,sf::R
     logger = new AppLog(400,150);
 
     logger->AddLog("Creating lookup rule");
-    Timer timer;
+    Timer timer{};
     timer.Start();
-    rule = new LookupRule(ruleString);
+    rule = new LookupRule(std::move(ruleString));
     timer.End();
     logger->AddLog(timer.GetTime("creating lookup rule"));
 
@@ -171,7 +172,7 @@ void Grid::UpdateCellsStates(const int * range){
 }
 
 void Grid::CalculateCells() {
-    Timer timer;
+    Timer timer{};
     timer.Start();
     // update state
     for (int i = 0; i < _threads; i++) {

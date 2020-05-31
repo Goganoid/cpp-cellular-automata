@@ -89,7 +89,7 @@ void Controls::SwitchKeyboard(sf::Event event) {
         _grid->TogglePause();
     }
 
-    // place smth
+    // spawn pattern
     if(event.key.code==sf::Keyboard::Z){
         _grid->Erase();
         for(Point point:_pattern.pattern){

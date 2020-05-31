@@ -1,7 +1,7 @@
 //
 // Created by egor0 on 4/27/2020.
 //
-
+/// DEPRECATED ///
 #ifndef CPP_LIFE_OVERFLOWARRAY_H
 #define CPP_LIFE_OVERFLOWARRAY_H
 template<typename T>
@@ -12,13 +12,11 @@ private:
 public:
     T& operator[](long int index){
         if(index<0){
-//            std::cout<<"UnderFlow "<< index <<std::endl;
             index = size + index;
             return operator[](index);
         }
 
         if(index>=size){
-//            std::cout<<"Overflow "<< index <<std::endl;
             index = index - size;
             return operator[](index);
         }

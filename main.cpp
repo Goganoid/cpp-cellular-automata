@@ -83,6 +83,7 @@ int main() {
             if (!fileBrowser.IsOpened() && !ImGui::IsAnyWindowFocused()) controls.SwitchMouse(event);
             if (event.type == sf::Event::KeyPressed) controls.SwitchKeyboard(event);
         }
+            // draw logger and menu
             ImGui::SFML::Update(window, deltaClock.restart());
             ImGui::SetNextWindowPos(ImVec2(276, 0), ImGuiCond_Always);
             world.logger->Draw("Logger");
@@ -113,7 +114,6 @@ int main() {
             ImGui::End();
             if (creatingNewGrid) {
                 world.SetPause(true);
-
 
                 ImGui::Begin("Select grid size");
                 ImGui::Text("Grid size is ");
@@ -149,8 +149,8 @@ int main() {
 
             window.clear(sf::Color::Black);
             buffer.clear(sf::Color(gridColor[0] * 255, gridColor[1] * 255, gridColor[2] * 255));
-            // calculate cells new state
 
+            // calculate cells new state
             world.CalculateCells();
 
 
