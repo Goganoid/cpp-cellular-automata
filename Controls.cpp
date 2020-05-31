@@ -84,30 +84,32 @@ void Controls::SwitchMouse(sf::Event event){
 }
 
 void Controls::SwitchKeyboard(sf::Event event) {
-    // Start/Pause simulation
-    if(event.key.code == sf::Keyboard::Space){
-        _grid->TogglePause();
-    }
-
-    // spawn pattern
-    if(event.key.code==sf::Keyboard::Z){
-        _grid->Erase();
-        for(Point point:_pattern.pattern){
-            _grid->GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
+    if(!disabled) {
+        // Start/Pause simulation
+        if (event.key.code == sf::Keyboard::Space) {
+            _grid->TogglePause();
         }
-    }
-    if(event.key.code==sf::Keyboard::X){
-        _grid->Erase();
-    }
 
-    if(event.key.code==sf::Keyboard::Add || event.key.code==sf::Keyboard::Equal){
-        framerateLimit+=5;
-        _window->setFramerateLimit(framerateLimit);
-    }
-    if(event.key.code==sf::Keyboard::Subtract|| event.key.code==sf::Keyboard::Dash){
-        if(framerateLimit>=5) framerateLimit-=5;
-        else framerateLimit = 1;
-        _window->setFramerateLimit(framerateLimit);
+        // spawn pattern
+        if (event.key.code == sf::Keyboard::Z) {
+            _grid->Erase();
+            for (Point point:_pattern.pattern) {
+                _grid->GetCell(point.x, point.y).SetNextState(CellBehavior::Alive);
+            }
+        }
+        if (event.key.code == sf::Keyboard::X) {
+            _grid->Erase();
+        }
+
+        if (event.key.code == sf::Keyboard::Add || event.key.code == sf::Keyboard::Equal) {
+            framerateLimit += 5;
+            _window->setFramerateLimit(framerateLimit);
+        }
+        if (event.key.code == sf::Keyboard::Subtract || event.key.code == sf::Keyboard::Dash) {
+            if (framerateLimit >= 5) framerateLimit -= 5;
+            else framerateLimit = 1;
+            _window->setFramerateLimit(framerateLimit);
+        }
     }
 }
 
@@ -116,4 +118,11 @@ void Controls::SetPattern(RLEReadResult pattern) {
 }
 RLEReadResult const&  Controls::GetPattern() const {
     return _pattern;
+}
+
+void Controls::DisableControls() {
+    disabled = true;
+}
+void Controls::EnableControls() {
+    disabled = false;
 }

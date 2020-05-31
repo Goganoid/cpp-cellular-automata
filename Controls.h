@@ -19,6 +19,7 @@ private:
     sf::Vector2i _mouseViewPortPos;
     sf::Vector2i _prevMouseViewPortPos;
     sf::Vector2f _center;
+    bool disabled = false;
 public:
     float zoomModifier = 20;
     unsigned int framerateLimit = 50;
@@ -36,7 +37,8 @@ public:
 
     void SwitchMouse(sf::Event event);
     void SwitchKeyboard(sf::Event event);
-
+    void DisableControls();
+    void EnableControls();
 
 
 };

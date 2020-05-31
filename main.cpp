@@ -101,6 +101,7 @@ int main() {
             if (fileBrowser.HasSelected()) {
                 controls.SetPattern(OpenRLE_File(fileBrowser.GetSelected().string()));
                 creatingNewGrid = true;
+                controls.DisableControls();
                 newScreenSize[0] = MakeDivisibleBy(controls.GetPattern().point.x, threadCount);
                 newScreenSize[1] = MakeDivisibleBy(controls.GetPattern().point.y, threadCount);
                 int biggest = std::max(newScreenSize[0], newScreenSize[1]);
@@ -142,6 +143,7 @@ int main() {
                     world.ChangeRule(controls.GetPattern().rule);
                     world.ChangeSize(newScreenSize[0], newScreenSize[1]);
                     creatingNewGrid = false;
+                    controls.EnableControls();
                 }
                 ImGui::End();
 
