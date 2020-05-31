@@ -125,6 +125,9 @@ int main()
             creatingNewGrid = true;
             newScreenSize[0]=MakeDivisibleBy(pattern.point.x, threadCount);
             newScreenSize[1] = MakeDivisibleBy(pattern.point.y, threadCount);
+            int biggest = std::max(newScreenSize[0],newScreenSize[1]);
+            newScreenSize[0] = biggest;
+            newScreenSize[1] = biggest;
             screenCenter.x = newScreenSize[0]/2.f;
             screenCenter.y = newScreenSize[1]/2.f;
             fileBrowser.ClearSelected();
