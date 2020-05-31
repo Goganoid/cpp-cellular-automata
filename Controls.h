@@ -7,11 +7,13 @@
 #include "SFML/Graphics.hpp"
 #include "Grid.h"
 #include "Cursor.h"
-class MouseControls {
+#include "RLEREadResult.h"
+
+class Controls {
 private:
     Grid *_grid;
     Cursor *_cursor;
-
+    RLEReadResult _pattern;
     sf::RenderWindow *_window;
     sf::Vector2f _viewportSize;
     sf::Vector2i _mouseViewPortPos;
@@ -19,10 +21,12 @@ private:
     sf::Vector2f _center;
 public:
     float zoomModifier = 20;
+    unsigned int framerateLimit = 50;
+    Controls(Grid &grid, Cursor &cursor, sf::RenderWindow &window);
 
-    MouseControls(Grid &grid, Cursor &cursor, sf::RenderWindow &window);
+    void UpdateMouseConfiguration();
 
-    void UpdateConfiguration();
+    void SetPattern(RLEReadResult pattern);
 
     static void setViewSize(sf::RenderWindow &window, sf::Vector2f center, sf::Vector2f size);
 
@@ -31,6 +35,7 @@ public:
     static sf::Vector2i mouseToViewPortPos(sf::RenderWindow &window, sf::Vector2f screenSize);
 
     void SwitchMouse(sf::Event event);
+    void SwitchKeyboard(sf::Event event);
 
 
 

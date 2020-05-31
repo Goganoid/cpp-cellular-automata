@@ -9,13 +9,9 @@
 #include <fstream>
 #include <regex>
 #include "Point.h"
+#include "RLEREadResult.h"
 
 
-struct RLEReadResult{
-    std::string rule;
-    Point point;
-    std::vector<Point> pattern;
-};
 
 std::vector<Point> FromRLE(std::string rle){
     std::remove(rle.begin(),rle.end(),'\n');

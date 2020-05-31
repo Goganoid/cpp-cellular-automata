@@ -3,26 +3,28 @@
 //
 #include "Controls.h"
 
-MouseControls::MouseControls(Grid& grid, Cursor& cursor, sf::RenderWindow& window){
+#include <utility>
+#include "Point.h"
+Controls::Controls(Grid& grid, Cursor& cursor, sf::RenderWindow& window){
 _grid = &grid;
 _cursor = &cursor;
 _window = &window;
-UpdateConfiguration();
+    UpdateMouseConfiguration();
 _mouseViewPortPos = mouseToViewPortPos(*_window, _viewportSize);
 _prevMouseViewPortPos = _mouseViewPortPos;
 }
 
-void MouseControls::setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size){
+void Controls::setViewSize(sf::RenderWindow &window, sf::Vector2f center, sf::Vector2f size){
     sf::View view(center,size);
     window.setView(view);
 }
 
-void MouseControls::UpdateConfiguration() {
+void Controls::UpdateMouseConfiguration() {
     _center = _window->getView().getCenter();
     _viewportSize = _window->getView().getSize();
 }
 
-sf::Vector2i MouseControls::mouseToCursorPos(sf::RenderWindow& window,sf::Vector2f screenSize){
+sf::Vector2i Controls::mouseToCursorPos(sf::RenderWindow& window, sf::Vector2f screenSize){
     sf::Vector2i mousePos{sf::Mouse::getPosition(window)};
     sf::Vector2u size = window.getSize();
     sf::Vector2f viewCenter = window.getView().getCenter();
@@ -34,7 +36,7 @@ sf::Vector2i MouseControls::mouseToCursorPos(sf::RenderWindow& window,sf::Vector
     return mousePos;
 }
 
-sf::Vector2i MouseControls::mouseToViewPortPos(sf::RenderWindow& window,sf::Vector2f screenSize){
+sf::Vector2i Controls::mouseToViewPortPos(sf::RenderWindow& window, sf::Vector2f screenSize){
     sf::Vector2i mousePos{sf::Mouse::getPosition(window)};
     sf::Vector2u size = window.getSize();
     mousePos.x /= (size.x/screenSize.x);
@@ -46,7 +48,7 @@ sf::Vector2i MouseControls::mouseToViewPortPos(sf::RenderWindow& window,sf::Vect
 
 
 
-void MouseControls::SwitchMouse(sf::Event event){
+void Controls::SwitchMouse(sf::Event event){
     _mouseViewPortPos = mouseToViewPortPos(*_window, _viewportSize);
     // move cursor to mouse
     if (event.type == sf::Event::MouseMoved) {
@@ -82,3 +84,31 @@ void MouseControls::SwitchMouse(sf::Event event){
     setViewSize(*_window,_center,_viewportSize);
 }
 
+void Controls::SwitchKeyboard(sf::Event event) {
+    // Start/Pause simulation
+    if(event.key.code == sf::Keyboard::Space){
+        _grid->TogglePause();
+    }
+
+    // place smth
+    if(event.key.code==sf::Keyboard::Z){
+        _grid->Erase();
+        for(Point point:_pattern.pattern){
+            _grid->GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
+        }
+    }
+
+    if(event.key.code==sf::Keyboard::Add || event.key.code==sf::Keyboard::Equal){
+        framerateLimit+=5;
+        _window->setFramerateLimit(framerateLimit);
+    }
+    if(event.key.code==sf::Keyboard::Subtract|| event.key.code==sf::Keyboard::Dash){
+        if(framerateLimit>=5) framerateLimit-=5;
+        else framerateLimit = 1;
+        _window->setFramerateLimit(framerateLimit);
+    }
+}
+
+void Controls::SetPattern(RLEReadResult pattern) {
+    _pattern = std::move(pattern);
+}

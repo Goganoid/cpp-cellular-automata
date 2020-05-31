@@ -27,33 +27,30 @@ void setViewSize(sf::RenderWindow &window,sf::Vector2f center,sf::Vector2f size)
 }
 
 
-int main()
-{
+int main() {
 
 
-//    auto pattern = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
     RLEReadResult pattern;
 
     int threadCount = 8;
     // create window
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Game of life");
-    unsigned int framerateLimit = 50;
-    window.setFramerateLimit(framerateLimit);
+//    unsigned int framerateLimit = 50;
+//    window.setFramerateLimit(framerateLimit);
     ImGui::SFML::Init(window);
+
     // change window size to upscale pixels
     sf::RenderTexture buffer;
-
-
-    int newScreenSize[2] = {1000,1000};
-    sf::Vector2f screenCenter{newScreenSize[0]/2.f,newScreenSize[1]/2.f};
-    setViewSize(window,screenCenter, sf::Vector2f (newScreenSize[0],newScreenSize[1]));
-
-    buffer.create(newScreenSize[0],newScreenSize[1]);
+//    int newScreenSize[2] = {1000, 1000};
+    int newScreenSize[2] = {160, 160};
+    sf::Vector2f screenCenter{newScreenSize[0] / 2.f, newScreenSize[1] / 2.f};
+    setViewSize(window, screenCenter, sf::Vector2f(newScreenSize[0], newScreenSize[1]));
+    buffer.create(newScreenSize[0], newScreenSize[1]);
     sf::Sprite bufferSprite(buffer.getTexture());
 
     // create grid and get access to grid 2d array
     Grid world = Grid(newScreenSize[0], newScreenSize[1], "3/23", threadCount, buffer);
-    Cursor cursor = Cursor(50,50);
+    Cursor cursor = Cursor(50, 50);
 
     // Create clock to count framerate
     sf::Clock Clock;
@@ -61,10 +58,10 @@ int main()
     float framerate;
 
 
-    MouseControls controls(world, cursor, window);
-
+    Controls controls(world, cursor, window);
+    window.setFramerateLimit(controls.framerateLimit);
     // all for imgui
-    float gridColor[3]{0.215,0.215,0.215};
+    float gridColor[3]{0.215, 0.215, 0.215};
     ImGui::FileBrowser fileBrowser;
     fileBrowser.SetTitle("Choose file");
     fileBrowser.Open();
@@ -72,119 +69,91 @@ int main()
 
     bool creatingNewGrid = false;
 
-    Timer timer;
 
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         framerate = 1.f / Clock.getElapsedTime().asSeconds();
         Clock.restart();
-        window.setTitle(std::to_string(framerate)+" " +"X: " +std::to_string(cursor.GetX()) + " Y:" + std::to_string(cursor.GetY()));
+        window.setTitle(std::to_string(framerate) + " " + "X: " + std::to_string(cursor.GetX()) + " Y:" +
+                        std::to_string(cursor.GetY()));
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
 
 
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(event);
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
-            if(!fileBrowser.IsOpened() && !ImGui::IsAnyWindowFocused()) controls.SwitchMouse(event);
-            
-            if(event.type == sf::Event::KeyPressed) {
-
-                // Start/Pause simulation
-                if(event.key.code == sf::Keyboard::Space){
-                    world.TogglePause();
-                }
-
-                // place smth
-                if(event.key.code==sf::Keyboard::Z){
-                    world.Erase();
-                    for(Point point:pattern.pattern){
-                        world.GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
-                    }
-                }
-
-                if(event.key.code==sf::Keyboard::Add || event.key.code==sf::Keyboard::Equal){
-                    framerateLimit+=5;
-                    window.setFramerateLimit(framerateLimit);
-                }
-                if(event.key.code==sf::Keyboard::Subtract|| event.key.code==sf::Keyboard::Dash){
-                    if(framerateLimit>=5) framerateLimit-=5;
-                    else framerateLimit = 1;
-                    window.setFramerateLimit(framerateLimit);
-                }
-            }
+            if (!fileBrowser.IsOpened() && !ImGui::IsAnyWindowFocused()) controls.SwitchMouse(event);
+            if (event.type == sf::Event::KeyPressed) controls.SwitchKeyboard(event);
         }
+            ImGui::SFML::Update(window, deltaClock.restart());
+            ImGui::SetNextWindowPos(ImVec2(276, 0), ImGuiCond_Always);
+            world.logger->Draw("Logger");
+            ImGui::SetNextWindowSize(ImVec2(275, 150), ImGuiCond_Always);
+            ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+            ImGui::Begin("Game Of Life");
+            ImGui::ColorEdit3("Grid Color", gridColor);
 
-        ImGui::SFML::Update(window, deltaClock.restart());
-        ImGui::SetNextWindowPos(ImVec2(276,0),ImGuiCond_Always);
-        world.logger->Draw("Logger");
-        ImGui::SetNextWindowSize(ImVec2(275,150), ImGuiCond_Always);
-        ImGui::SetNextWindowPos(ImVec2(0,0),ImGuiCond_Always);
-        ImGui::Begin("Game Of Life");
-        ImGui::ColorEdit3("Grid Color",gridColor);
-
-        if(ImGui::Button("Choose pattern")){
-            fileBrowser.Open();
-        }
-
-        fileBrowser.Display();
-
-        if(fileBrowser.HasSelected())
-        {
-            pattern = OpenRLE_File(fileBrowser.GetSelected().string());
-            creatingNewGrid = true;
-            newScreenSize[0]=MakeDivisibleBy(pattern.point.x, threadCount);
-            newScreenSize[1] = MakeDivisibleBy(pattern.point.y, threadCount);
-            int biggest = std::max(newScreenSize[0],newScreenSize[1]);
-            newScreenSize[0] = biggest;
-            newScreenSize[1] = biggest;
-            screenCenter.x = newScreenSize[0]/2.f;
-            screenCenter.y = newScreenSize[1]/2.f;
-            fileBrowser.ClearSelected();
-
-        }
-        ImGui::End();
-        if(creatingNewGrid){
-            world.SetPause(true);
-
-
-            ImGui::Begin("Select grid size");
-            ImGui::Text("Grid size is ");
-            ImGui::SameLine();
-            ImGui::TextColored(ImVec4(1, 1, 0, 1), "%i, %i", (int) newScreenSize[0], (int) newScreenSize[1]);
-
-            bool sizeDividesByThreadCount = true;
-            ImGui::Text("Change to:");
-
-            ImGui::InputInt2("New Size",newScreenSize);
-            if(newScreenSize[0]%threadCount!=0 || newScreenSize[1]%threadCount!=0){
-                sizeDividesByThreadCount = false;
-                ImGui::TextColored(ImVec4(1,0,0,1),"X/Y must be divided by the number of threads(%i) completely!",threadCount);
-            }
-            else{
-                sizeDividesByThreadCount = true;
+            if (ImGui::Button("Choose pattern")) {
+                fileBrowser.Open();
             }
 
-            if(ImGui::Button("OK") && sizeDividesByThreadCount){
+            fileBrowser.Display();
 
-                buffer.create(newScreenSize[0],newScreenSize[1]);
-                bufferSprite = sf::Sprite(buffer.getTexture());
-                setViewSize(window,screenCenter, sf::Vector2f (newScreenSize[0],newScreenSize[1]));
-                controls.UpdateConfiguration();
+            if (fileBrowser.HasSelected()) {
+                pattern = OpenRLE_File(fileBrowser.GetSelected().string());
+                controls.SetPattern(pattern);
+                creatingNewGrid = true;
+                newScreenSize[0] = MakeDivisibleBy(pattern.point.x, threadCount);
+                newScreenSize[1] = MakeDivisibleBy(pattern.point.y, threadCount);
+                int biggest = std::max(newScreenSize[0], newScreenSize[1]);
+                newScreenSize[0] = biggest;
+                newScreenSize[1] = biggest;
+                screenCenter.x = newScreenSize[0] / 2.f;
+                screenCenter.y = newScreenSize[1] / 2.f;
+                fileBrowser.ClearSelected();
 
-                world.ChangeRule(pattern.rule);
-                world.ChangeSize(newScreenSize[0],newScreenSize[1]);
-                creatingNewGrid = false;
             }
             ImGui::End();
+            if (creatingNewGrid) {
+                world.SetPause(true);
 
-        }
+
+                ImGui::Begin("Select grid size");
+                ImGui::Text("Grid size is ");
+                ImGui::SameLine();
+                ImGui::TextColored(ImVec4(1, 1, 0, 1), "%i, %i", (int) newScreenSize[0], (int) newScreenSize[1]);
+
+                bool sizeDividesByThreadCount = true;
+                ImGui::Text("Change to:");
+
+                ImGui::InputInt2("New Size", newScreenSize);
+                if (newScreenSize[0] % threadCount != 0 || newScreenSize[1] % threadCount != 0) {
+                    sizeDividesByThreadCount = false;
+                    ImGui::TextColored(ImVec4(1, 0, 0, 1),
+                                       "X/Y must be divided by the number of threads(%i) completely!", threadCount);
+                } else {
+                    sizeDividesByThreadCount = true;
+                }
+
+                if (ImGui::Button("OK") && sizeDividesByThreadCount) {
+
+                    buffer.create(newScreenSize[0], newScreenSize[1]);
+                    bufferSprite = sf::Sprite(buffer.getTexture());
+                    setViewSize(window, screenCenter, sf::Vector2f(newScreenSize[0], newScreenSize[1]));
+                    controls.UpdateMouseConfiguration();
+
+                    world.ChangeRule(pattern.rule);
+                    world.ChangeSize(newScreenSize[0], newScreenSize[1]);
+                    creatingNewGrid = false;
+                }
+                ImGui::End();
+
+            }
 
             window.clear(sf::Color::Black);
-            buffer.clear(sf::Color(gridColor[0]*255,gridColor[1]*255,gridColor[2]*255));
+            buffer.clear(sf::Color(gridColor[0] * 255, gridColor[1] * 255, gridColor[2] * 255));
             // calculate cells new state
 
             world.CalculateCells();
@@ -200,7 +169,7 @@ int main()
             ImGui::SFML::Render(window);
             window.display();
 
+        }
+        ImGui::SFML::Shutdown();
+        return 0;
     }
-    ImGui::SFML::Shutdown();
-    return 0;
-}
