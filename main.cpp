@@ -31,7 +31,8 @@ int main()
 {
 
 
-    auto pattern = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
+//    auto pattern = OpenRLE_File("C:\\Users\\egor0\\ClionProjects\\cpp_life\\test.rl");
+    RLEReadResult pattern;
 
     int threadCount = 8;
     // create window
@@ -50,7 +51,7 @@ int main()
     sf::Sprite bufferSprite(buffer.getTexture());
 
     // create grid and get access to grid 2d array
-    Grid world = Grid(newScreenSize[0], newScreenSize[1], pattern.rule, threadCount, buffer);
+    Grid world = Grid(newScreenSize[0], newScreenSize[1], "3/23", threadCount, buffer);
     Cursor cursor = Cursor(50,50);
 
     // Create clock to count framerate
@@ -65,6 +66,7 @@ int main()
     float gridColor[3]{0.215,0.215,0.215};
     ImGui::FileBrowser fileBrowser;
     fileBrowser.SetTitle("Choose file");
+    fileBrowser.Open();
 
 
     bool creatingNewGrid = false;
