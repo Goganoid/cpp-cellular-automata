@@ -4,7 +4,6 @@
 #include "Controls.h"
 
 #include <utility>
-#include "Point.h"
 Controls::Controls(Grid& grid, Cursor& cursor, sf::RenderWindow& window){
 _grid = &grid;
 _cursor = &cursor;
@@ -96,6 +95,9 @@ void Controls::SwitchKeyboard(sf::Event event) {
         for(Point point:_pattern.pattern){
             _grid->GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
         }
+    }
+    if(event.key.code==sf::Keyboard::X){
+        _grid->Erase();
     }
 
     if(event.key.code==sf::Keyboard::Add || event.key.code==sf::Keyboard::Equal){
