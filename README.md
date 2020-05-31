@@ -1,6 +1,8 @@
 # cpp-cellular-automata
 Cellular automata written on C++
-!(Image)[https://github.com/Goganoid/cpp-cellular-automata/blob/master/Preview.png?raw=true]
+
+![Image](https://github.com/Goganoid/cpp-cellular-automata/blob/master/Preview.png?raw=true)
+
 # How to build
 ```shell
 git clone https://github.com/Goganoid/cpp-cellular-automata.git
@@ -20,3 +22,7 @@ cmake --build path\cpp-cellular-automata\build\release\ --target cpp_life --conf
 | X                                    | Erase                  
 | Space                                | Toggle Pause           
 | +/-				       | Increase/Decrease framerate limit by 5
+
+
+
+
