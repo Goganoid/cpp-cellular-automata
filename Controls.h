@@ -27,7 +27,7 @@ public:
     void UpdateMouseConfiguration();
 
     void SetPattern(RLEReadResult pattern);
-
+    RLEReadResult const& GetPattern() const;
     static void setViewSize(sf::RenderWindow &window, sf::Vector2f center, sf::Vector2f size);
 
     static sf::Vector2i mouseToCursorPos(sf::RenderWindow &window, sf::Vector2f screenSize);

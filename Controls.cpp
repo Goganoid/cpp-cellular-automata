@@ -112,3 +112,6 @@ void Controls::SwitchKeyboard(sf::Event event) {
 void Controls::SetPattern(RLEReadResult pattern) {
     _pattern = std::move(pattern);
 }
+RLEReadResult const&  Controls::GetPattern() const {
+    return _pattern;
+}
