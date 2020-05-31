@@ -37,7 +37,8 @@ int main()
     int threadCount = 8;
     // create window
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Game of life");
-    window.setFramerateLimit(50);
+    unsigned int framerateLimit = 50;
+    window.setFramerateLimit(framerateLimit);
     ImGui::SFML::Init(window);
     // change window size to upscale pixels
     sf::RenderTexture buffer;
@@ -103,6 +104,16 @@ int main()
                     for(Point point:pattern.pattern){
                         world.GetCell(point.x,point.y).SetNextState(CellBehavior::Alive);
                     }
+                }
+
+                if(event.key.code==sf::Keyboard::Add || event.key.code==sf::Keyboard::Equal){
+                    framerateLimit+=5;
+                    window.setFramerateLimit(framerateLimit);
+                }
+                if(event.key.code==sf::Keyboard::Subtract|| event.key.code==sf::Keyboard::Dash){
+                    if(framerateLimit>=5) framerateLimit-=5;
+                    else framerateLimit = 1;
+                    window.setFramerateLimit(framerateLimit);
                 }
             }
         }
