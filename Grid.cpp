@@ -50,7 +50,7 @@ Grid::Grid(int width, int height,std::string ruleString, int threadsAmount,sf::R
 
 }
 
-void Grid::ChangeRule(std::string &ruleString) {
+void Grid::ChangeRule(std::string const& ruleString) {
     delete rule;
     rule = new LookupRule(ruleString);
 }
