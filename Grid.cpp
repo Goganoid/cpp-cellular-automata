@@ -8,7 +8,7 @@
 #include "Timer.h"
 
 
-Grid::Grid(int width, int height,std::string& ruleString, int threadsAmount,sf::RenderTarget& screen) {
+Grid::Grid(int width, int height,std::string ruleString, int threadsAmount,sf::RenderTarget& screen) {
     logger = new AppLog(400,150);
 
     logger->AddLog("Creating lookup rule");
