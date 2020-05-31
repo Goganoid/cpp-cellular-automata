@@ -1,12 +1,12 @@
 //
 // Created by egor0 on 4/21/2020.
 //
-#include "Grid.h"
+#include "../Headers/Grid.h"
 #include <thread>
-#include "CellRule.h"
+#include "../Headers/CellRule.h"
 #include <iostream>
 #include <utility>
-#include "Timer.h"
+#include "../Headers/Timer.h"
 
 
 Grid::Grid(int width, int height,std::string ruleString, int threadsAmount,sf::RenderTarget& screen) {

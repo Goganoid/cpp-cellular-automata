@@ -1,7 +1,7 @@
 //
 // Created by egor0 on 5/6/2020.
 //
-#include "CellRule.h"
+#include "../Headers/CellRule.h"
 #include <bitset>
 
 // divides "3/23" in ["3","23"]

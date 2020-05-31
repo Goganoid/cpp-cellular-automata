@@ -1,7 +1,7 @@
 //
 // Created by egor0 on 4/23/2020.
 //
-#include "WorldMember.h"
+#include "../Headers/WorldMember.h"
 
 WorldMember::WorldMember(int x, int y, sf::Color color) {
     objectRect = sf::VertexArray(sf::Quads,4);

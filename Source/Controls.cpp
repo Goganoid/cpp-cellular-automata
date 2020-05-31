@@ -1,7 +1,7 @@
 //
 // Created by egor0 on 5/3/2020.
 //
-#include "Controls.h"
+#include "../Headers/Controls.h"
 
 #include <utility>
 Controls::Controls(Grid& grid, Cursor& cursor, sf::RenderWindow& window){

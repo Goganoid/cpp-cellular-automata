@@ -4,9 +4,9 @@
 
 #ifndef CPP_LIFE_APPLOG_H
 #define CPP_LIFE_APPLOG_H
-#include "imgui/imgui.h"
-#include "imgui/imgui-SFML.h"
-#include "imgui/imconfig.h"
+#include "imgui.h"
+#include "imgui-SFML.h"
+#include "imconfig.h"
 #include <ctime>
 #include <sstream>
 #include <iomanip>

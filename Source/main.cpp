@@ -2,15 +2,15 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "imgui/imgui.h"
-#include "imgui/imgui-SFML.h"
-#include "imgui/imfilebrowser.h"
+#include "imgui.h"
+#include "imgui-SFML.h"
+#include "imfilebrowser.h"
 
-#include "Grid.h"
-#include "Cursor.h"
-#include "RLE_Coder.h"
-#include "Controls.h"
-#include "Timer.h"
+#include "../Headers/Grid.h"
+#include "../Headers/Cursor.h"
+#include "../Headers/RLE_Coder.h"
+#include "../Headers/Controls.h"
+#include "../Headers/Timer.h"
 
 
 int MakeDivisibleBy(int value, int div){
