@@ -1,5 +1,5 @@
 # cpp-cellular-automata
-Cellular automata written on C++
+Cellular automata written in C++
 
 ![Image](https://github.com/Goganoid/cpp-cellular-automata/blob/master/Preview.png?raw=true)
 
