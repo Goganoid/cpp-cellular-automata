@@ -121,19 +121,11 @@ int main() {
                 ImGui::SameLine();
                 ImGui::TextColored(ImVec4(1, 1, 0, 1), "%i, %i", (int) newScreenSize[0], (int) newScreenSize[1]);
 
-                bool sizeDividesByThreadCount = true;
                 ImGui::Text("Change to:");
 
                 ImGui::InputInt2("New Size", newScreenSize);
-                if (newScreenSize[0] % threadCount != 0 || newScreenSize[1] % threadCount != 0) {
-                    sizeDividesByThreadCount = false;
-                    ImGui::TextColored(ImVec4(1, 0, 0, 1),
-                                       "X/Y must be divided by the number of threads(%i) completely!", threadCount);
-                } else {
-                    sizeDividesByThreadCount = true;
-                }
 
-                if (ImGui::Button("OK") && sizeDividesByThreadCount) {
+                if (ImGui::Button("OK")) {
 
                     buffer.create(newScreenSize[0], newScreenSize[1]);
                     bufferSprite = sf::Sprite(buffer.getTexture());

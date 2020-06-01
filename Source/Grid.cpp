@@ -117,13 +117,13 @@ Cell& Grid::GetCell(int x, int y) {
 int ** Grid::DivideGridIntoZones(int zones, int length){
     int** zonesRanges;
     zonesRanges = new int*[zones];
-    if((length%zones)!=0){
-        throw std::runtime_error("The length should be divided completely!");
-    }
-    int zoneLength = length/zones;
+    bool b;
+    b = length % zones == 0;
+    int zoneLength = div(length,zones).quot;
     int prevValue=0;
     for(int i=0;i<zones;i+=1){
-        zonesRanges[i] = new int[2]{prevValue,(i+1)*zoneLength};
+        if(!b && i == zones - 1) zonesRanges[i]=new int[2]{prevValue, length};
+        else zonesRanges[i] = new int[2]{prevValue,(i+1)*zoneLength};
         prevValue = (i+1)*zoneLength;
     }
     return zonesRanges;
